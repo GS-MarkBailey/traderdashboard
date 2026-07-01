@@ -40,7 +40,7 @@ function MetadataItem({
     <div className="flex min-w-0 items-center gap-1.5">
       <dt className={`${TABLE_MICRO_LABEL_CLASS} shrink-0 whitespace-nowrap`}>{label}</dt>
       <dd
-        className={`flex min-w-0 items-center gap-1 ${TABLE_ROW_LABEL_CLASS} font-medium text-gray-700 ${
+        className={`flex min-w-0 items-center gap-1 ${TABLE_ROW_LABEL_CLASS} font-medium text-app-text-secondary ${
           tabular ? 'tabular-nums' : ''
         }`}
       >
@@ -60,11 +60,11 @@ export function FixtureInfo({
   redCardHasDataIssue = false,
 }: FixtureInfoProps) {
   return (
-    <div className="min-w-0 w-full border-b border-[#e5e7eb] bg-white px-2 py-2 sm:px-4 sm:py-3">
+    <div className="min-w-0 w-full border-b border-app-border bg-app-surface px-2 py-2 sm:px-4 sm:py-3">
       <div className="flex min-w-0 items-start justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h1 className={`min-w-0 ${TABLE_HEADER_CLASS} text-[13px] text-gray-900`}>
+            <h1 className={`min-w-0 ${TABLE_HEADER_CLASS} text-[13px] text-app-text`}>
               {fixture.homeTeam} v {fixture.awayTeam}
             </h1>
             {matchMinute !== undefined ? (
@@ -112,7 +112,7 @@ export function FixtureInfo({
 
         <div className="shrink-0 text-right">
           <p className={TABLE_MICRO_LABEL_CLASS}>Trader</p>
-          <p className={`mt-0.5 ${TABLE_HEADER_CLASS} text-gray-900`}>
+          <p className={`mt-0.5 ${TABLE_HEADER_CLASS} text-app-text`}>
             {fixture.traderName}
           </p>
         </div>

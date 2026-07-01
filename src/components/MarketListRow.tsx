@@ -79,7 +79,7 @@ export function MarketListRow({
   })
 
   const alertCellClass = (alert: boolean) =>
-    `${cellClass} ${editor.rowBg} ${alert ? 'relative bg-[#f3b4b4]' : ''}`
+    `${cellClass} ${editor.rowBg} ${alert ? 'relative bg-app-issue-price-bg' : ''}`
 
   return (
     <tr className={editor.rowBg}>

@@ -26,7 +26,7 @@ function TruncatedTextPopover({
 
   return (
     <div
-      className="pointer-events-none fixed z-[100] max-w-[min(20rem,calc(100vw-1rem))] -translate-x-1/2 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-medium leading-snug text-gray-900 shadow-lg"
+      className="pointer-events-none fixed z-[100] max-w-[min(20rem,calc(100vw-1rem))] -translate-x-1/2 rounded-lg border border-app-border bg-app-surface px-2.5 py-1.5 text-[11px] font-medium leading-snug text-app-text shadow-lg"
       style={
         placement === 'above'
           ? { left: anchor.x, top: anchor.y - offset, transform: 'translate(-50%, -100%)' }

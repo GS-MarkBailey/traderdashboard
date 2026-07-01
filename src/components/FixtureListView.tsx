@@ -38,13 +38,13 @@ export function FixtureListView({
         : 'min-w-[36rem]'
 
   return (
-    <div className="min-w-0 w-full bg-white">
-      <div className="border-b border-[#e5e7eb] px-4 py-3 sm:px-6">
+    <div className="min-w-0 w-full bg-app-surface">
+      <div className="border-b border-app-border px-4 py-3 sm:px-6">
         {breadcrumb ? (
           <p className={TABLE_MICRO_META_CLASS}>{breadcrumb}</p>
         ) : null}
         <h1
-          className={`${breadcrumb ? 'mt-1' : ''} ${TABLE_HEADER_CLASS} text-[13px] text-gray-900`}
+          className={`${breadcrumb ? 'mt-1' : ''} ${TABLE_HEADER_CLASS} text-[13px] text-app-text`}
         >
           {title}
         </h1>
@@ -54,12 +54,12 @@ export function FixtureListView({
       </div>
 
       <div className="p-4 sm:px-6">
-        <div className="w-full max-w-full overflow-x-auto rounded-xl border border-[#e5e7eb] bg-white">
+        <div className="w-full max-w-full overflow-x-auto rounded-xl border border-app-border bg-app-surface">
           <table
             className={`w-full border-collapse text-left ${TABLE_BODY_CLASS} ${minWidth}`}
           >
             <thead>
-              <tr className="bg-[#f9fafb]">
+              <tr className="bg-app-muted">
                 <th className={TABLE_HEAD_CELL_CLASS}>Fixture</th>
                 {showCountry ? (
                   <th className={TABLE_HEAD_CELL_CLASS}>Country</th>
@@ -80,21 +80,21 @@ export function FixtureListView({
                 return (
                   <tr
                     key={fixture.id}
-                    className={`cursor-pointer transition-colors hover:bg-[#f9fafb] ${
-                      selected ? 'bg-[#eff6ff]' : ''
+                    className={`cursor-pointer transition-colors hover:bg-app-muted ${
+                      selected ? 'bg-app-selected-bg' : ''
                     }`}
                     onClick={() => onSelectFixture(fixture.id)}
                   >
-                    <td className={`${TABLE_CELL_CLASS} ${TABLE_PLAYER_NAME_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                    <td className={`${TABLE_CELL_CLASS} ${TABLE_PLAYER_NAME_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                       {formatFixtureLabel(fixture)}
                     </td>
                     {showCountry ? (
-                      <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                      <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                         {country}
                       </td>
                     ) : null}
                     {showCompetition ? (
-                      <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                      <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                         <div className="flex min-w-0 items-center gap-1.5">
                           <img
                             src={competitionLogoUrl}
@@ -106,16 +106,16 @@ export function FixtureListView({
                         </div>
                       </td>
                     ) : null}
-                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                       {fixture.id}
                     </td>
-                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                       {formatKickoffDate(fixture.kickoffAt)}
                     </td>
-                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                       {formatKickoffTime(fixture.kickoffAt)}
                     </td>
-                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-[#eff6ff]' : ''}`}>
+                    <td className={`${TABLE_CELL_CLASS} ${TABLE_LABEL_CLASS} ${selected ? 'bg-app-selected-bg' : ''}`}>
                       {fixture.traderName}
                     </td>
                   </tr>

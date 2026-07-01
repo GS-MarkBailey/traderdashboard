@@ -470,15 +470,15 @@ export function PlayerGridTable({
       {showPlayerMarkets ? (
       <CollapsibleSection
         title="Player Markets"
-        className="border-b border-[#e5e7eb] bg-white px-2 py-2 sm:px-4 sm:py-3"
+        className="border-b border-app-border bg-app-surface px-2 py-2 sm:px-4 sm:py-3"
         bodyClassName="pt-2 sm:pt-3"
       >
-        <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-sm">
+        <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface shadow-sm">
           <Toolbar {...toolbarProps} />
 
           <div className="p-4">
             {players.length === 0 ? (
-              <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-gray-300 bg-[#f9fafb] text-sm text-gray-500">
+              <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-app-input-border bg-app-muted text-sm text-app-text-muted">
                 Import players using the button in the toolbar above.
               </div>
             ) : viewMode === 'list' ? (
@@ -500,7 +500,7 @@ export function PlayerGridTable({
                     ))}
                   </colgroup>
                   <thead>
-                    <tr className="bg-[#f9fafb]">
+                    <tr className="bg-app-muted">
                       <th className={`sticky left-0 z-20 ${TABLE_HEAD_CELL_CLASS}`}>
                         Players
                       </th>
@@ -519,7 +519,7 @@ export function PlayerGridTable({
                       <tr>
                         <td
                           colSpan={MARKET_COLUMNS.length + 1}
-                          className="border border-[#e5e7eb] px-4 py-12 text-center text-sm text-gray-500"
+                          className="border border-app-border px-4 py-12 text-center text-sm text-app-text-muted"
                         >
                           No players match the current filters.
                         </td>
@@ -527,7 +527,7 @@ export function PlayerGridTable({
                     ) : (
                       filteredPlayers.map((player) => (
                         <tr key={player.id}>
-                          <td className="sticky left-0 z-10 border border-[#e5e7eb] bg-white px-1.5 py-1 align-top">
+                          <td className="sticky left-0 z-10 border border-app-border bg-app-surface px-1.5 py-1 align-top">
                             <div className="flex min-w-0 flex-col gap-1">
                               <TruncatedText className={TABLE_PLAYER_NAME_CLASS}>
                                 {player.name}
@@ -549,7 +549,7 @@ export function PlayerGridTable({
                             return (
                               <td
                                 key={column.key}
-                                className="w-[1%] border border-[#e5e7eb] p-0 align-top"
+                                className="w-[1%] border border-app-border p-0 align-top"
                               >
                                 <MarketCell
                                   cellKey={key}

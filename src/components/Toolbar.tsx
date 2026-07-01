@@ -23,7 +23,7 @@ function FilterPillGroup<T extends string>({
   onChange,
 }: FilterPillGroupProps<T>) {
   return (
-    <div className="flex rounded-lg border border-gray-200 bg-white p-0.5">
+    <div className="flex rounded-lg border border-app-border bg-app-surface p-0.5">
       {options.map((option) => (
         <button
           key={option.value}
@@ -32,7 +32,7 @@ function FilterPillGroup<T extends string>({
           className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
             value === option.value
               ? 'bg-gray-900 text-white'
-              : 'text-gray-600 hover:bg-gray-50'
+              : 'text-app-text-muted hover:bg-app-hover'
           }`}
         >
           {option.label}
@@ -126,8 +126,8 @@ function PlayerFiltersDropdown({
         aria-haspopup="dialog"
         className={`relative inline-flex items-center rounded-lg border px-3 py-2 text-sm font-medium shadow-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
           activeCount > 0
-            ? 'border-[#93c5fd] bg-[#eff6ff] text-[#1d4ed8] hover:bg-[#dbeafe]'
-            : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+            ? 'border-app-focus bg-app-selected-bg text-app-selected-text hover:bg-app-selected-hover'
+            : 'border-app-border bg-app-surface text-app-text-secondary hover:bg-app-hover'
         }`}
       >
         Filters
@@ -136,7 +136,7 @@ function PlayerFiltersDropdown({
             {activeCount}
           </span>
         ) : null}
-        <span className="ml-2 text-gray-500" aria-hidden>
+        <span className="ml-2 text-app-text-muted" aria-hidden>
           <ChevronDownIcon />
         </span>
       </button>
@@ -145,7 +145,7 @@ function PlayerFiltersDropdown({
         <div
           role="dialog"
           aria-label="Player filters"
-          className="absolute top-[calc(100%+0.5rem)] right-0 z-40 w-[min(100vw-2rem,20rem)] rounded-xl border border-[#e5e7eb] bg-white p-3 shadow-lg"
+          className="absolute top-[calc(100%+0.5rem)] right-0 z-40 w-[min(100vw-2rem,20rem)] rounded-xl border border-app-border bg-app-surface p-3 shadow-lg"
         >
           <div className="flex flex-col gap-3">
             <FilterSection label="Strength">
@@ -221,7 +221,7 @@ function FilterSection({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-app-text-muted">
         {label}
       </p>
       {children}
@@ -275,7 +275,7 @@ export function Toolbar({
   onViewModeChange,
 }: ToolbarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3 border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
+    <div className="flex flex-wrap items-center gap-3 border-b border-app-border bg-app-muted px-4 py-3">
       <ProposalsPopover
         proposals={proposals}
         disabled={!hasPlayers}
@@ -301,7 +301,7 @@ export function Toolbar({
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         disabled={!hasPlayers}
-        className="w-44 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 outline-none placeholder:text-gray-400 focus:border-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-44 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text-secondary outline-none placeholder:text-app-text-faint focus:border-app-focus disabled:cursor-not-allowed disabled:opacity-50"
       />
 
       <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
@@ -319,14 +319,14 @@ export function Toolbar({
           onIssueFilterChange={onIssueFilterChange}
         />
 
-        <div className="flex rounded-lg border border-gray-200 bg-white p-0.5">
+        <div className="flex rounded-lg border border-app-border bg-app-surface p-0.5">
           <button
             type="button"
             onClick={() => onViewModeChange('grid')}
             className={`rounded-md p-1.5 transition-colors ${
               viewMode === 'grid'
-                ? 'bg-gray-100 text-gray-900'
-                : 'text-gray-500 hover:bg-gray-50'
+                ? 'bg-app-subtle text-app-text'
+                : 'text-app-text-muted hover:bg-app-hover'
             }`}
             aria-label="Grid view"
             title="Grid view"
@@ -338,8 +338,8 @@ export function Toolbar({
             onClick={() => onViewModeChange('list')}
             className={`rounded-md p-1.5 transition-colors ${
               viewMode === 'list'
-                ? 'bg-gray-100 text-gray-900'
-                : 'text-gray-500 hover:bg-gray-50'
+                ? 'bg-app-subtle text-app-text'
+                : 'text-app-text-muted hover:bg-app-hover'
             }`}
             aria-label="List view"
             title="List view"

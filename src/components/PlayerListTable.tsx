@@ -55,7 +55,7 @@ export function PlayerListTable({
   getMarketSuspensionProps,
 }: PlayerListTableProps) {
   return (
-    <div className="w-full max-w-full overflow-x-auto rounded-xl border border-[#e5e7eb] bg-white">
+    <div className="w-full max-w-full overflow-x-auto rounded-xl border border-app-border bg-app-surface">
       <table className={`w-full table-fixed border-collapse text-left ${TABLE_BODY_CLASS}`}>
           <colgroup>
             {LIST_COLUMNS.map((column) => (
@@ -63,7 +63,7 @@ export function PlayerListTable({
             ))}
           </colgroup>
           <thead>
-            <tr className="bg-[#f9fafb]">
+            <tr className="bg-app-muted">
               {LIST_COLUMNS.map((column) => (
                 <th
                   key={column.key}
@@ -83,7 +83,7 @@ export function PlayerListTable({
             <tr>
               <td
                 colSpan={LIST_COLUMNS.length}
-                className="border border-[#e5e7eb] px-4 py-12 text-center text-sm text-gray-500"
+                className="border border-app-border px-4 py-12 text-center text-sm text-app-text-muted"
               >
                 No cells match the current filters.
               </td>

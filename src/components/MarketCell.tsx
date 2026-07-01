@@ -29,7 +29,7 @@ interface MarketCellProps {
 }
 
 const secondaryRowClass =
-  'mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5 leading-none tabular-nums text-gray-700'
+  'mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5 leading-none tabular-nums text-app-text-secondary'
 
 function AlertCorner() {
   return (
@@ -61,7 +61,7 @@ function MarketValueBlock({
   return (
     <div
       className={`relative min-w-0 rounded-sm px-1 py-0.5 ${
-        alert ? 'bg-[#f3b4b4]' : ''
+        alert ? 'bg-app-issue-price-bg' : ''
       } ${className}`}
     >
       {alert && <AlertCorner />}
@@ -161,7 +161,7 @@ export const MarketCell = memo(function MarketCell({
                 {formatPrice(market.primaryPrice)}
               </TruncatedText>
               <BookmakerLogo bookmaker={market.bookmaker} size="sm" />
-              <span className={`${TABLE_PRICE_SECONDARY_CLASS} shrink-0 text-[#d1d5db]`}>
+              <span className={`${TABLE_PRICE_SECONDARY_CLASS} shrink-0 text-app-input-border`}>
                 |
               </span>
               <AveragePriceTooltip

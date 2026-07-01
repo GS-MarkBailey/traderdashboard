@@ -16,7 +16,7 @@ const SCREENS: { value: AppScreen; label: string }[] = [
 export function ScreenTabs({ value, onChange }: ScreenTabsProps) {
   return (
     <nav
-      className="flex items-center gap-5 border-b border-[#e5e7eb]"
+      className="flex items-center gap-5 border-b border-app-border"
       aria-label="Fixture views"
     >
       {SCREENS.map((screen) => {
@@ -30,8 +30,8 @@ export function ScreenTabs({ value, onChange }: ScreenTabsProps) {
             aria-current={active ? 'page' : undefined}
             className={`-mb-px border-b-2 px-0.5 pb-2 pt-0.5 transition-colors ${TABLE_HEADER_CLASS} ${
               active
-                ? 'border-gray-900 text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                ? 'border-app-border text-app-text'
+                : 'border-transparent text-app-text-muted hover:border-app-input-border hover:text-app-text-secondary'
             }`}
           >
             {screen.label}

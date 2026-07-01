@@ -6,7 +6,7 @@ function SectionChevron({ expanded }: { expanded: boolean }) {
     <svg
       viewBox="0 0 16 16"
       aria-hidden
-      className={`h-3.5 w-3.5 shrink-0 text-gray-500 transition-transform ${
+      className={`h-3.5 w-3.5 shrink-0 text-app-text-muted transition-transform ${
         expanded ? 'rotate-90' : ''
       }`}
     >
@@ -48,10 +48,10 @@ export function CollapsibleSection({
           type="button"
           onClick={() => setExpanded((current) => !current)}
           aria-expanded={expanded}
-          className="-ml-1 flex min-w-0 items-center gap-1.5 rounded-md px-1 py-1 text-left hover:bg-gray-50"
+          className="-ml-1 flex min-w-0 items-center gap-1.5 rounded-md px-1 py-1 text-left hover:bg-app-hover"
         >
           <SectionChevron expanded={expanded} />
-          <h2 className={`${TABLE_HEADER_CLASS} text-gray-900`}>{title}</h2>
+          <h2 className={`${TABLE_HEADER_CLASS} text-app-text`}>{title}</h2>
         </button>
 
         {headerActions && expanded ? (

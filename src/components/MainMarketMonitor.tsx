@@ -5,9 +5,10 @@ import { isMainSectionVisibleForTier } from '../lib/tradingTier'
 import {
   buildMainMarketHealthSnapshot,
   getMainMarketSectionStatusLabel,
-  MAIN_MARKET_STATUS_DOT,
+  getMainMarketStatusDot,
   type MainMarketColumnStatus,
 } from '../lib/mainMarketHealth'
+import { useTheme } from '../lib/theme'
 import { HealthSegmentBar, HealthSegmentLegend } from './HealthSegmentBar'
 import { TruncatedText } from './TruncatedText'
 
@@ -27,14 +28,14 @@ const STATUS_CONFIG = {
   attention: {
     label: 'Main markets need attention',
     description: 'Some BM0 prices have drifted from primary.',
-    banner: 'border-amber-200 bg-amber-50 text-amber-900',
+    banner: 'border-amber-200 bg-amber-50 text-app-issue-amber-text',
     dot: 'bg-amber-500',
     score: 'text-amber-700',
   },
   critical: {
     label: 'Main markets critical',
     description: 'Unpriced columns or widespread price drift detected.',
-    banner: 'border-red-200 bg-red-50 text-red-900',
+    banner: 'border-red-200 bg-red-50 text-app-issue-price-text',
     dot: 'bg-red-500',
     score: 'text-red-700',
   },
@@ -44,15 +45,15 @@ const ISSUE_BADGE: Record<
   Exclude<MainMarketColumnStatus, 'healthy' | 'closed'>,
   { label: string; className: string }
 > = {
-  unpriced: { label: 'Unpriced', className: 'bg-[#fde8e8] text-red-800' },
-  price: { label: 'Price', className: 'bg-[#f3b4b4] text-red-900' },
-  suspended: { label: 'Suspended', className: 'bg-[#fffbeb] text-amber-900' },
+  unpriced: { label: 'Unpriced', className: 'bg-app-issue-red-bg text-app-issue-red-text' },
+  price: { label: 'Price', className: 'bg-app-issue-price-bg text-app-issue-price-text' },
+  suspended: { label: 'Suspended', className: 'bg-app-issue-amber-bg text-app-issue-amber-text' },
 }
 
 const SECTION_STATUS_BADGE: Record<MainMarketSectionStatus, string> = {
-  trading: 'bg-white text-gray-700 ring-1 ring-inset ring-gray-200',
-  suspended: 'bg-[#fffbeb] text-amber-900 ring-1 ring-inset ring-[#fcd34d]',
-  closed: 'bg-[#fde8e8] text-red-800 ring-1 ring-inset ring-[#fca5a5]',
+  trading: 'bg-app-surface text-app-text-secondary ring-1 ring-inset ring-app-border',
+  suspended: 'bg-app-issue-amber-bg text-app-issue-amber-text ring-1 ring-inset ring-app-issue-amber-border',
+  closed: 'bg-app-issue-red-bg text-app-issue-red-text ring-1 ring-inset ring-app-issue-red-border',
 }
 
 function StatCard({
@@ -67,20 +68,22 @@ function StatCard({
   accent?: string
 }) {
   return (
-    <div className="rounded-xl border border-[#e5e7eb] bg-white px-4 py-3">
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+    <div className="rounded-xl border border-app-border bg-app-surface px-4 py-3">
+      <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-semibold tabular-nums ${accent ?? 'text-gray-900'}`}>
+      <p className={`mt-1 text-2xl font-semibold tabular-nums ${accent ?? 'text-app-text'}`}>
         {value}
       </p>
-      {hint ? <p className="mt-0.5 text-xs text-gray-500">{hint}</p> : null}
+      {hint ? <p className="mt-0.5 text-xs text-app-text-muted">{hint}</p> : null}
     </div>
   )
 }
 
 
 export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
+  const { resolvedTheme } = useTheme()
+  const statusDot = getMainMarketStatusDot(resolvedTheme)
   const snapshot = useMemo(
     () => buildMainMarketHealthSnapshot(settings),
     [settings],
@@ -164,24 +167,24 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-          <div className="border-b border-[#e5e7eb] px-4 py-3">
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+        <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+          <div className="border-b border-app-border px-4 py-3">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Health by section
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               Healthy, suspended, and attention share per main market group
             </p>
             <HealthSegmentLegend />
           </div>
-          <div className="divide-y divide-[#e5e7eb]">
+          <div className="divide-y divide-app-border">
             {visibleSections.map((section) => (
               <div
                 key={section.sectionId}
                 className="grid grid-cols-[1fr] items-center gap-x-4 gap-y-1 px-4 py-2.5 sm:grid-cols-[10rem_1fr]"
               >
                 <div className="min-w-0">
-                  <TruncatedText as="p" className="text-sm font-medium text-gray-800">
+                  <TruncatedText as="p" className="text-sm font-medium text-app-text-secondary">
                     {section.sectionLabel}
                   </TruncatedText>
                   <span
@@ -201,59 +204,59 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-          <div className="border-b border-[#e5e7eb] px-4 py-3">
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+        <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+          <div className="border-b border-app-border px-4 py-3">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Section overview
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               Trading state and column counts
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-px bg-[#e5e7eb]">
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <div className="grid grid-cols-2 gap-px bg-app-border">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Trading
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-700">
                 {snapshot.tradingSections}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Healthy columns
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-700">
                 {snapshot.healthyColumns}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Paused columns
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-amber-700">
                 {snapshot.suspendedColumns}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Closed columns
               </p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-gray-600">
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-app-text-muted">
                 {snapshot.closedColumns}
               </p>
             </div>
           </div>
 
-          <div className="border-t border-[#e5e7eb] px-4 py-3">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+          <div className="border-t border-app-border px-4 py-3">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-app-text-muted">
               Legend
             </p>
             <div className="flex flex-wrap gap-2">
-              {Object.entries(MAIN_MARKET_STATUS_DOT).map(([key, config]) => (
+              {Object.entries(statusDot).map(([key, config]) => (
                 <span
                   key={key}
-                  className="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[11px] font-medium text-gray-700 ring-1 ring-inset ring-gray-200"
+                  className="inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[11px] font-medium text-app-text-secondary ring-1 ring-inset ring-app-border"
                 >
                   <span
                     className="h-2 w-2 rounded-full"
@@ -267,29 +270,29 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
         </section>
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-        <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
+      <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+        <div className="flex items-center justify-between border-b border-app-border px-4 py-3">
           <div>
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Main market issues
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               BM0 / primary price columns requiring attention
             </p>
           </div>
-          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+          <span className="rounded-full bg-app-subtle px-2.5 py-0.5 text-xs font-medium tabular-nums text-app-text-secondary">
             {visibleIssues.length}
           </span>
         </div>
 
         {visibleIssues.length === 0 ? (
-          <div className="px-4 py-10 text-center text-sm text-gray-500">
+          <div className="px-4 py-10 text-center text-sm text-app-text-muted">
             No open main market issues — all trading columns are healthy.
           </div>
         ) : (
           <div className="max-h-[min(20rem,calc(100dvh-28rem))] overflow-auto">
             <table className="w-full text-left text-sm">
-              <thead className="sticky top-0 bg-[#f9fafb] text-xs font-medium uppercase tracking-wide text-gray-500">
+              <thead className="sticky top-0 bg-app-muted text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 <tr>
                   <th className="px-4 py-2 font-medium">Section</th>
                   <th className="px-4 py-2 font-medium">Market</th>
@@ -300,7 +303,7 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e5e7eb]">
+              <tbody className="divide-y divide-app-border">
                 {visibleIssues.map((issue) => {
                   const badge =
                     ISSUE_BADGE[issue.status as Exclude<
@@ -311,13 +314,13 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
                   return (
                     <tr
                       key={`${issue.marketKey}-${issue.columnIndex}`}
-                      className="bg-white"
+                      className="bg-app-surface"
                     >
-                      <td className="px-4 py-2.5 font-medium text-gray-900">
+                      <td className="px-4 py-2.5 font-medium text-app-text">
                         {issue.sectionLabel}
                       </td>
-                      <td className="px-4 py-2.5 text-gray-700">{issue.marketLabel}</td>
-                      <td className="px-4 py-2.5 text-gray-700">{issue.columnLabel}</td>
+                      <td className="px-4 py-2.5 text-app-text-secondary">{issue.marketLabel}</td>
+                      <td className="px-4 py-2.5 text-app-text-secondary">{issue.columnLabel}</td>
                       <td className="px-4 py-2.5">
                         <span
                           className={`inline-flex rounded px-2 py-0.5 text-xs font-medium ${badge.className}`}
@@ -325,7 +328,7 @@ export function MainMarketMonitor({ settings, tier }: MainMarketMonitorProps) {
                           {badge.label}
                         </span>
                       </td>
-                      <td className="hidden px-4 py-2.5 text-gray-600 md:table-cell">
+                      <td className="hidden px-4 py-2.5 text-app-text-muted md:table-cell">
                         {issue.detail}
                       </td>
                     </tr>

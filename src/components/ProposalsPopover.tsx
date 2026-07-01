@@ -69,8 +69,8 @@ export function ProposalsPopover({
         onClick={() => setOpen((current) => !current)}
         className={`relative rounded-lg border px-3 py-2 text-sm font-medium shadow-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
           count > 0
-            ? 'border-[#93c5fd] bg-[#eff6ff] text-[#1d4ed8] hover:bg-[#dbeafe]'
-            : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+            ? 'border-app-focus bg-app-selected-bg text-app-selected-text hover:bg-app-selected-hover'
+            : 'border-app-border bg-app-surface text-app-text-secondary hover:bg-app-hover'
         }`}
       >
         Proposals
@@ -82,10 +82,10 @@ export function ProposalsPopover({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+        <div className="absolute top-full left-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-lg">
           <div className="border-b border-gray-100 px-4 py-3">
-            <h2 className="text-sm font-semibold text-gray-900">Price proposals</h2>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <h2 className="text-sm font-semibold text-app-text">Price proposals</h2>
+            <p className="mt-0.5 text-xs text-app-text-muted">
               {count === 0
                 ? 'No pending changes. Edit strengths in the grid to add proposals.'
                 : `${count} pending change${count === 1 ? '' : 's'}. Press Enter to confirm all.`}
@@ -94,7 +94,7 @@ export function ProposalsPopover({
 
           <div className="max-h-80 overflow-y-auto">
             {count === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-gray-400">
+              <div className="px-4 py-8 text-center text-sm text-app-text-faint">
                 Changes will appear here before you submit.
               </div>
             ) : (
@@ -102,36 +102,36 @@ export function ProposalsPopover({
                 {proposals.map((proposal) => (
                   <li
                     key={proposal.key}
-                    className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50"
+                    className="flex items-start gap-3 px-4 py-3 hover:bg-app-hover"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <TruncatedText className="text-sm font-medium text-gray-900">
+                        <TruncatedText className="text-sm font-medium text-app-text">
                           {proposal.playerName}
                         </TruncatedText>
-                        <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">
+                        <span className="shrink-0 rounded bg-app-subtle px-1.5 py-0.5 text-[10px] font-bold text-app-text-muted">
                           {proposal.teamBadge}
                         </span>
                       </div>
-                      <div className="mt-0.5 text-xs text-gray-500">
+                      <div className="mt-0.5 text-xs text-app-text-muted">
                         {proposal.marketLabel}
                       </div>
                       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums">
-                        <span className="text-gray-500">
+                        <span className="text-app-text-muted">
                           Strength{' '}
-                          <span className="text-gray-400 line-through">
+                          <span className="text-app-text-faint line-through">
                             {formatStrength(proposal.committedStrength)}
                           </span>{' '}
-                          <span className="font-semibold text-[#1d4ed8]">
+                          <span className="font-semibold text-app-selected-text">
                             {formatStrength(proposal.proposedStrength)}
                           </span>
                         </span>
-                        <span className="text-gray-500">
+                        <span className="text-app-text-muted">
                           Price{' '}
-                          <span className="text-gray-400 line-through">
+                          <span className="text-app-text-faint line-through">
                             {proposal.committedPrice}
                           </span>{' '}
-                          <span className="font-semibold text-[#1d4ed8]">
+                          <span className="font-semibold text-app-selected-text">
                             {proposal.proposedPrice}
                           </span>
                         </span>
@@ -140,7 +140,7 @@ export function ProposalsPopover({
                     <button
                       type="button"
                       onClick={() => onRejectOne(proposal.key)}
-                      className="shrink-0 rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                      className="shrink-0 rounded px-2 py-1 text-xs font-medium text-app-text-muted hover:bg-app-subtle hover:text-app-text-secondary"
                     >
                       Remove
                     </button>
@@ -150,12 +150,12 @@ export function ProposalsPopover({
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50 px-4 py-3">
+          <div className="flex items-center justify-end gap-2 border-t border-gray-100 bg-app-muted px-4 py-3">
             <button
               type="button"
               onClick={onRejectAll}
               disabled={count === 0}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-app-border bg-app-surface px-3 py-1.5 text-sm font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               Reject all
             </button>

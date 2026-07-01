@@ -35,14 +35,14 @@ const STATUS_CONFIG = {
   attention: {
     label: 'Needs attention',
     description: 'Some markets have pricing or line drift.',
-    banner: 'border-amber-200 bg-amber-50 text-amber-900',
+    banner: 'border-amber-200 bg-amber-50 text-app-issue-amber-text',
     dot: 'bg-amber-500',
     score: 'text-amber-700',
   },
   critical: {
     label: 'Critical',
     description: 'Unpriced markets or widespread issues detected.',
-    banner: 'border-red-200 bg-red-50 text-red-900',
+    banner: 'border-red-200 bg-red-50 text-app-issue-price-text',
     dot: 'bg-red-500',
     score: 'text-red-700',
   },
@@ -52,11 +52,11 @@ const ISSUE_BADGE: Record<
   Exclude<CellHealthStatus, 'healthy'>,
   { label: string; className: string }
 > = {
-  unpriced: { label: 'Unpriced', className: 'bg-[#fde8e8] text-red-800' },
-  price: { label: 'Price', className: 'bg-[#f3b4b4] text-red-900' },
-  line: { label: 'Line', className: 'bg-[#f3b4b4] text-red-900' },
-  multiple: { label: 'Price + Line', className: 'bg-[#fdf0f0] text-red-900' },
-  suspended: { label: 'Suspended', className: 'bg-[#fffbeb] text-amber-900' },
+  unpriced: { label: 'Unpriced', className: 'bg-app-issue-red-bg text-app-issue-red-text' },
+  price: { label: 'Price', className: 'bg-app-issue-price-bg text-app-issue-price-text' },
+  line: { label: 'Line', className: 'bg-app-issue-price-bg text-app-issue-price-text' },
+  multiple: { label: 'Price + Line', className: 'bg-app-issue-soft text-app-issue-price-text' },
+  suspended: { label: 'Suspended', className: 'bg-app-issue-amber-bg text-app-issue-amber-text' },
 }
 
 function StatCard({
@@ -71,14 +71,14 @@ function StatCard({
   accent?: string
 }) {
   return (
-    <div className="rounded-xl border border-[#e5e7eb] bg-white px-4 py-3">
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+    <div className="rounded-xl border border-app-border bg-app-surface px-4 py-3">
+      <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-semibold tabular-nums ${accent ?? 'text-gray-900'}`}>
+      <p className={`mt-1 text-2xl font-semibold tabular-nums ${accent ?? 'text-app-text'}`}>
         {value}
       </p>
-      {hint ? <p className="mt-0.5 text-xs text-gray-500">{hint}</p> : null}
+      {hint ? <p className="mt-0.5 text-xs text-app-text-muted">{hint}</p> : null}
     </div>
   )
 }
@@ -112,14 +112,14 @@ export function MarketMonitor({
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <div>
-        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-gray-500">
+        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-app-text-muted">
           Main markets
         </p>
         <MainMarketMonitor settings={mainMarkets} tier={tier} />
       </div>
 
       {!showPlayerMarkets ? null : players.length === 0 || !snapshot ? (
-        <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white text-sm text-gray-500">
+        <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-app-input-border bg-app-surface text-sm text-app-text-muted">
           Import players to view player prop market health.
         </div>
       ) : (
@@ -155,7 +155,7 @@ function PlayerMarketMonitorContent({
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+      <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
         Player props
       </p>
 
@@ -215,9 +215,9 @@ function PlayerMarketMonitorContent({
         />
       </section>
 
-      <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-        <div className="border-b border-[#e5e7eb] px-4 py-3">
-          <h3 className="font-heading text-sm font-semibold text-gray-900">
+      <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+        <div className="border-b border-app-border px-4 py-3">
+          <h3 className="font-heading text-sm font-semibold text-app-text">
             Issues over match time
           </h3>
         </div>
@@ -233,23 +233,23 @@ function PlayerMarketMonitorContent({
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-          <div className="border-b border-[#e5e7eb] px-4 py-3">
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+        <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+          <div className="border-b border-app-border px-4 py-3">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Health by market
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               Healthy, suspended, and attention share per prop type
             </p>
             <HealthSegmentLegend />
           </div>
-          <div className="divide-y divide-[#e5e7eb]">
+          <div className="divide-y divide-app-border">
             {snapshot.byMarket.map((market) => (
                 <div
                   key={market.marketKey}
                   className="grid grid-cols-[1fr] items-center gap-x-4 gap-y-1 px-4 py-2.5 sm:grid-cols-[8rem_1fr]"
                 >
-                  <TruncatedText className="text-sm font-medium text-gray-800">
+                  <TruncatedText className="text-sm font-medium text-app-text-secondary">
                     {market.marketLabel}
                   </TruncatedText>
                   <HealthSegmentBar
@@ -263,42 +263,42 @@ function PlayerMarketMonitorContent({
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-          <div className="border-b border-[#e5e7eb] px-4 py-3">
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+        <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+          <div className="border-b border-app-border px-4 py-3">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Squad overview
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               Player and suspension counts
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-px bg-[#e5e7eb]">
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <div className="grid grid-cols-2 gap-px bg-app-border">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Active players
               </p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-gray-900">
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-app-text">
                 {snapshot.activePlayers}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Inactive players
               </p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-gray-900">
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-app-text">
                 {snapshot.inactivePlayers}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Suspended markets
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-amber-700">
                 {snapshot.suspendedCells}
               </p>
             </div>
-            <div className="bg-white px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            <div className="bg-app-surface px-4 py-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 Healthy markets
               </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-700">
@@ -307,8 +307,8 @@ function PlayerMarketMonitorContent({
             </div>
           </div>
 
-          <div className="border-t border-[#e5e7eb] px-4 py-3">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+          <div className="border-t border-app-border px-4 py-3">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-app-text-muted">
               Legend
             </p>
             <div className="flex flex-wrap gap-2">
@@ -325,29 +325,29 @@ function PlayerMarketMonitorContent({
         </section>
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white">
-        <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
+      <section className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+        <div className="flex items-center justify-between border-b border-app-border px-4 py-3">
           <div>
-            <h3 className="font-heading text-sm font-semibold text-gray-900">
+            <h3 className="font-heading text-sm font-semibold text-app-text">
               Open issues
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-app-text-muted">
               Markets requiring trader attention (read-only)
             </p>
           </div>
-          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+          <span className="rounded-full bg-app-subtle px-2.5 py-0.5 text-xs font-medium tabular-nums text-app-text-secondary">
             {snapshot.issues.length}
           </span>
         </div>
 
         {snapshot.issues.length === 0 ? (
-          <div className="px-4 py-10 text-center text-sm text-gray-500">
+          <div className="px-4 py-10 text-center text-sm text-app-text-muted">
             No open issues — all active markets are healthy.
           </div>
         ) : (
           <div className="max-h-[min(24rem,calc(100dvh-28rem))] overflow-auto">
             <table className="w-full text-left text-sm">
-              <thead className="sticky top-0 bg-[#f9fafb] text-xs font-medium uppercase tracking-wide text-gray-500">
+              <thead className="sticky top-0 bg-app-muted text-xs font-medium uppercase tracking-wide text-app-text-muted">
                 <tr>
                   <th className="px-4 py-2 font-medium">Player</th>
                   <th className="px-4 py-2 font-medium">Market</th>
@@ -357,30 +357,30 @@ function PlayerMarketMonitorContent({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e5e7eb]">
+              <tbody className="divide-y divide-app-border">
                 {snapshot.issues.map((issue) => {
                   const badge =
                     ISSUE_BADGE[issue.status as Exclude<CellHealthStatus, 'healthy'>]
 
                   return (
-                    <tr key={`${issue.playerId}-${issue.marketKey}`} className="bg-white">
+                    <tr key={`${issue.playerId}-${issue.marketKey}`} className="bg-app-surface">
                       <td className="px-4 py-2.5">
                         <div className="flex min-w-0 items-center gap-2">
                           <span
                             className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${
                               issue.team === 'home'
-                                ? 'bg-red-100 text-red-800'
+                                ? 'bg-red-100 text-app-issue-red-text'
                                 : 'bg-blue-100 text-blue-800'
                             }`}
                           >
                             {issue.teamBadge}
                           </span>
-                          <TruncatedText className="font-medium text-gray-900">
+                          <TruncatedText className="font-medium text-app-text">
                             {issue.playerName}
                           </TruncatedText>
                         </div>
                       </td>
-                      <td className="px-4 py-2.5 text-gray-700">{issue.marketLabel}</td>
+                      <td className="px-4 py-2.5 text-app-text-secondary">{issue.marketLabel}</td>
                       <td className="px-4 py-2.5">
                         <span
                           className={`inline-flex rounded px-2 py-0.5 text-xs font-medium ${badge.className}`}
@@ -388,7 +388,7 @@ function PlayerMarketMonitorContent({
                           {badge.label}
                         </span>
                       </td>
-                      <td className="hidden px-4 py-2.5 text-gray-600 sm:table-cell">
+                      <td className="hidden px-4 py-2.5 text-app-text-muted sm:table-cell">
                         {issue.detail}
                       </td>
                     </tr>

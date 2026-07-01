@@ -38,7 +38,7 @@ function FilterPills({
   onChange: (value: IssueTimelineView) => void
 }) {
   return (
-    <div className="flex rounded-lg border border-gray-200 bg-[#f3f4f6] p-0.5">
+    <div className="flex rounded-lg border border-app-border bg-app-subtle p-0.5">
       {VIEW_OPTIONS.map((option) => (
         <button
           key={option.value}
@@ -46,8 +46,8 @@ function FilterPills({
           onClick={() => onChange(option.value)}
           className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
             value === option.value
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-app-surface text-app-text shadow-sm'
+              : 'text-app-text-muted hover:text-app-text'
           }`}
         >
           {option.label}
@@ -107,7 +107,7 @@ export function IssuesOverTimeChart({
 
   if (timeline.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-gray-400">
+      <div className="flex h-40 items-center justify-center text-sm text-app-text-faint">
         No match timeline yet.
       </div>
     )
@@ -145,16 +145,16 @@ export function IssuesOverTimeChart({
             x2={CHART_WIDTH - PAD.right}
             y1={PAD.top + PLOT_HEIGHT}
             y2={PAD.top + PLOT_HEIGHT}
-            stroke="#e5e7eb"
+            stroke="var(--color-app-chart-grid)"
             strokeWidth={1}
           />
 
-          <path d={chartData.areaPath} fill="#f3f4f6" />
+          <path d={chartData.areaPath} fill="var(--color-app-chart-fill)" />
 
           <path
             d={chartData.linePath}
             fill="none"
-            stroke="#374151"
+            stroke="var(--color-app-chart-line)"
             strokeWidth={1.5}
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -165,7 +165,7 @@ export function IssuesOverTimeChart({
             x2={currentX}
             y1={PAD.top}
             y2={PAD.top + PLOT_HEIGHT}
-            stroke="#d1d5db"
+            stroke="var(--color-app-chart-marker)"
             strokeWidth={1}
           />
 
@@ -175,7 +175,8 @@ export function IssuesOverTimeChart({
               x={chartData.xScale(tick)}
               y={CHART_HEIGHT - 8}
               textAnchor="middle"
-              className="fill-gray-400 text-[10px]"
+              fill="var(--color-app-text-faint)"
+              className="text-[10px]"
             >
               {formatMinuteLabel(tick)}
             </text>
@@ -201,14 +202,14 @@ export function IssuesOverTimeChart({
                 cx={chartData.hovered.x}
                 cy={chartData.hovered.y}
                 r={3}
-                fill="#374151"
+                fill="var(--color-app-chart-line)"
               />
               <line
                 x1={chartData.hovered.x}
                 x2={chartData.hovered.x}
                 y1={PAD.top}
                 y2={PAD.top + PLOT_HEIGHT}
-                stroke="#e5e7eb"
+                stroke="var(--color-app-chart-grid)"
                 strokeWidth={1}
               />
             </>
@@ -216,11 +217,11 @@ export function IssuesOverTimeChart({
         </svg>
 
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-5 px-0.5 text-xs leading-5 tabular-nums text-gray-400"
+          className="pointer-events-none absolute inset-x-0 top-0 h-5 px-0.5 text-xs leading-5 tabular-nums text-app-text-faint"
           aria-live="polite"
         >
-          <span className={chartData.hovered ? 'text-gray-600' : undefined}>
-            <span className={chartData.hovered ? 'text-gray-900' : undefined}>
+          <span className={chartData.hovered ? 'text-app-text-muted' : undefined}>
+            <span className={chartData.hovered ? 'text-app-text' : undefined}>
               {formatMinuteLabel(displayMinute)}
             </span>
             {' · '}

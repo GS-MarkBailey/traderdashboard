@@ -38,18 +38,18 @@ function AveragePricePopover({
 
   return (
     <div
-      className="pointer-events-none fixed z-[100] min-w-[10.5rem] -translate-x-1/2 rounded-lg border border-gray-200 bg-white px-2.5 py-2 shadow-lg"
+      className="pointer-events-none fixed z-[100] min-w-[10.5rem] -translate-x-1/2 rounded-lg border border-app-border bg-app-surface px-2.5 py-2 shadow-lg"
       style={
         placement === 'above'
           ? { left: anchor.x, top: anchor.y - offset, transform: 'translate(-50%, -100%)' }
           : { left: anchor.x, top: anchor.y + offset, transform: 'translateX(-50%)' }
       }
     >
-      <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+      <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-app-text-muted">
         Average price
       </span>
       {truncatedPriceLabel ? (
-        <span className="mb-1.5 block text-[11px] font-semibold tabular-nums text-gray-900">
+        <span className="mb-1.5 block text-[11px] font-semibold tabular-nums text-app-text">
           {truncatedPriceLabel}
         </span>
       ) : null}
@@ -66,10 +66,10 @@ function AveragePricePopover({
                 preferFallback={preferFallback}
                 onImageError={() => onImageError(bookmaker)}
               />
-              <TruncatedText className="flex-1 text-[11px] font-medium text-gray-700">
+              <TruncatedText className="flex-1 text-[11px] font-medium text-app-text-secondary">
                 {config.label}
               </TruncatedText>
-              <span className="shrink-0 text-[11px] font-medium tabular-nums text-gray-900">
+              <span className="shrink-0 text-[11px] font-medium tabular-nums text-app-text">
                 {formatPrice(price)}
               </span>
             </span>

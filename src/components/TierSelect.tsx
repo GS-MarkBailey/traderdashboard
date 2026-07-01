@@ -2,6 +2,7 @@ import {
   TRADING_TIER_OPTIONS,
   type TradingTier,
 } from '../lib/tradingTier'
+import { FORM_LABEL_CLASS, FORM_SELECT_CLASS } from '../lib/tableTypography'
 
 interface TierSelectProps {
   value: TradingTier
@@ -11,11 +12,11 @@ interface TierSelectProps {
 export function TierSelect({ value, onChange }: TierSelectProps) {
   return (
     <label className="flex items-center gap-2">
-      <span className="text-sm font-medium text-gray-600">Tier</span>
+      <span className={FORM_LABEL_CLASS}>Tier</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value as TradingTier)}
-        className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className={FORM_SELECT_CLASS}
         aria-label="Trading tier"
       >
         {TRADING_TIER_OPTIONS.map((option) => (

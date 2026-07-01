@@ -11,7 +11,7 @@ const NAV_SECTIONS: { value: AppNavSection; label: string }[] = [
 
 export function AppHeaderNav({ value, onChange }: AppHeaderNavProps) {
   return (
-    <nav className="flex items-center gap-1 border-l border-gray-200 pl-4" aria-label="Main navigation">
+    <nav className="flex items-center gap-1 border-l border-app-border pl-4" aria-label="Main navigation">
       {NAV_SECTIONS.map((section) => {
         const active = value === section.value
 
@@ -23,8 +23,8 @@ export function AppHeaderNav({ value, onChange }: AppHeaderNavProps) {
             aria-current={active ? 'page' : undefined}
             className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
               active
-                ? 'font-semibold text-gray-900 hover:bg-gray-100'
-                : 'font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                ? 'font-semibold text-app-text hover:bg-app-subtle'
+                : 'font-medium text-app-text-muted hover:bg-app-subtle hover:text-app-text'
             }`}
           >
             {section.label}

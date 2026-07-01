@@ -37,7 +37,7 @@ function TreeChevron({ expanded }: { expanded: boolean }) {
     <svg
       viewBox="0 0 16 16"
       aria-hidden
-      className={`h-3 w-3 shrink-0 text-gray-400 transition-transform ${
+      className={`h-3 w-3 shrink-0 text-app-text-faint transition-transform ${
         expanded ? 'rotate-90' : ''
       }`}
     >
@@ -58,7 +58,7 @@ function PanelChevron({ collapsed }: { collapsed: boolean }) {
     <svg
       viewBox="0 0 16 16"
       aria-hidden
-      className="h-3.5 w-3.5 shrink-0 text-gray-500"
+      className="h-3.5 w-3.5 shrink-0 text-app-text-muted"
     >
       {collapsed ? (
         <path
@@ -106,7 +106,7 @@ function BranchButton({
   return (
     <div
       className={`flex w-full min-w-0 items-center gap-0.5 rounded ${
-        selected ? 'bg-[#eff6ff]' : ''
+        selected ? 'bg-app-selected-bg' : ''
       }`}
       style={{ paddingLeft: `${depth * 12 + 6}px` }}
     >
@@ -115,7 +115,7 @@ function BranchButton({
         onClick={onToggle}
         aria-label={expanded ? `Collapse ${label}` : `Expand ${label}`}
         aria-expanded={expanded}
-        className="inline-flex shrink-0 items-center justify-center rounded p-0.5 hover:bg-[#f3f4f6]"
+        className="inline-flex shrink-0 items-center justify-center rounded p-0.5 hover:bg-app-subtle"
       >
         <TreeChevron expanded={expanded} />
       </button>
@@ -123,8 +123,8 @@ function BranchButton({
         type="button"
         onClick={onSelect ?? onToggle}
         aria-current={selected ? 'true' : undefined}
-        className={`flex min-w-0 flex-1 items-center gap-1 truncate rounded px-1 py-1 text-left hover:bg-[#f3f4f6] ${labelClass} ${
-          selected ? 'font-semibold text-[#1d4ed8]' : ''
+        className={`flex min-w-0 flex-1 items-center gap-1 truncate rounded px-1 py-1 text-left hover:bg-app-subtle ${labelClass} ${
+          selected ? 'font-semibold text-app-selected-text' : ''
         }`}
       >
         {leading}
@@ -152,8 +152,8 @@ function FixtureButton({
       aria-current={selected ? 'page' : undefined}
       className={`flex w-full min-w-0 flex-col rounded py-1 pr-1.5 text-left ${
         selected
-          ? 'bg-[#eff6ff] text-[#1d4ed8]'
-          : 'text-gray-700 hover:bg-[#f3f4f6]'
+          ? 'bg-app-selected-bg text-app-selected-text'
+          : 'text-app-text-secondary hover:bg-app-subtle'
       }`}
       style={{ paddingLeft: `${depth * 12 + 22}px` }}
     >
@@ -212,24 +212,24 @@ export function FixtureTaxonomyAside({
   return (
     <aside
       aria-expanded={!collapsed}
-      className={`flex h-full min-h-0 shrink-0 flex-col self-stretch overflow-hidden border-r border-[#e5e7eb] bg-white transition-[width] duration-200 ease-in-out ${
+      className={`flex h-full min-h-0 shrink-0 flex-col self-stretch overflow-hidden border-r border-app-border bg-app-surface transition-[width] duration-200 ease-in-out ${
         collapsed ? 'w-10' : 'w-[15.5rem]'
       }`}
     >
       {collapsed ? (
-        <div className="flex flex-col items-center gap-2 border-b border-[#e5e7eb] py-2">
+        <div className="flex flex-col items-center gap-2 border-b border-app-border py-2">
           <button
             type="button"
             title="Expand fixtures"
             aria-label="Expand fixtures sidebar"
             onClick={() => setCollapsed(false)}
-            className="inline-flex h-7 w-7 items-center justify-center rounded border border-gray-200 bg-white hover:bg-[#f3f4f6]"
+            className="inline-flex h-7 w-7 items-center justify-center rounded border border-app-border bg-app-surface hover:bg-app-subtle"
           >
             <PanelChevron collapsed />
           </button>
         </div>
       ) : (
-        <div className="flex items-start justify-between gap-2 border-b border-[#e5e7eb] px-3 py-2.5">
+        <div className="flex items-start justify-between gap-2 border-b border-app-border px-3 py-2.5">
           <div className="min-w-0">
             <h2 className={TABLE_HEADER_CLASS}>Fixtures</h2>
             <p className={`mt-0.5 ${TABLE_MICRO_META_CLASS}`}>
@@ -241,7 +241,7 @@ export function FixtureTaxonomyAside({
             title="Collapse fixtures"
             aria-label="Collapse fixtures sidebar"
             onClick={() => setCollapsed(true)}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-gray-200 bg-white hover:bg-[#f3f4f6]"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-app-border bg-app-surface hover:bg-app-subtle"
           >
             <PanelChevron collapsed={false} />
           </button>

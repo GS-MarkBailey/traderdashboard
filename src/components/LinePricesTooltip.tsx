@@ -31,14 +31,14 @@ function LinePricesPopover({
 
   return (
     <div
-      className="pointer-events-none fixed z-[100] min-w-[7.5rem] -translate-x-1/2 rounded-lg border border-gray-200 bg-white px-2.5 py-2 shadow-lg"
+      className="pointer-events-none fixed z-[100] min-w-[7.5rem] -translate-x-1/2 rounded-lg border border-app-border bg-app-surface px-2.5 py-2 shadow-lg"
       style={
         placement === 'above'
           ? { left: anchor.x, top: anchor.y - offset, transform: 'translate(-50%, -100%)' }
           : { left: anchor.x, top: anchor.y + offset, transform: 'translateX(-50%)' }
       }
     >
-      <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+      <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-app-text-muted">
         Line prices
       </span>
       <span className="flex flex-col gap-0.5">
@@ -49,19 +49,19 @@ function LinePricesPopover({
             <span
               key={line}
               className={`flex items-center justify-between gap-3 rounded px-1 py-0.5 tabular-nums ${
-                isActive ? 'bg-gray-100' : ''
+                isActive ? 'bg-app-subtle' : ''
               }`}
             >
               <span
                 className={`text-[11px] ${
-                  isActive ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'
+                  isActive ? 'font-semibold text-app-text' : 'font-medium text-app-text-secondary'
                 }`}
               >
                 {formatLine(line)}
               </span>
               <span
                 className={`text-[11px] ${
-                  isActive ? 'font-semibold text-gray-900' : 'font-medium text-gray-900'
+                  isActive ? 'font-semibold text-app-text' : 'font-medium text-app-text'
                 }`}
               >
                 {formatPrice(price)}

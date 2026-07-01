@@ -11,7 +11,7 @@ interface SectionScoreChipProps {
 const CHIP_STYLES = {
   healthy:
     'border-emerald-200 bg-emerald-50 text-emerald-900',
-  issue: 'border-red-200 bg-red-50 text-red-900',
+  issue: 'border-red-200 bg-red-50 text-app-issue-price-text',
 } as const
 
 function chipClassName(hasDataIssue: boolean): string {

@@ -119,6 +119,23 @@ export const MAIN_MARKET_STATUS_DOT: Record<
   price: { color: '#ef4444', label: 'Price drift' },
 }
 
+const MAIN_MARKET_STATUS_DOT_DARK: Record<
+  MainMarketColumnStatus,
+  { color: string; label: string }
+> = {
+  healthy: { color: '#4b5563', label: 'Healthy' },
+  suspended: { color: '#fbbf24', label: 'Suspended' },
+  closed: { color: '#6b7280', label: 'Closed' },
+  unpriced: { color: '#f87171', label: 'Unpriced' },
+  price: { color: '#ef4444', label: 'Price drift' },
+}
+
+export function getMainMarketStatusDot(
+  theme: 'light' | 'dark',
+): Record<MainMarketColumnStatus, { color: string; label: string }> {
+  return theme === 'dark' ? MAIN_MARKET_STATUS_DOT_DARK : MAIN_MARKET_STATUS_DOT
+}
+
 export function buildMainMarketHealthSnapshot(
   settings: MainMarketSettings,
 ): MainMarketHealthSnapshot {

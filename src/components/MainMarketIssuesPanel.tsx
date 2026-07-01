@@ -48,9 +48,9 @@ const ISSUE_BADGE: Record<
   Exclude<MainMarketColumnStatus, 'healthy' | 'closed'>,
   { label: string; className: string }
 > = {
-  unpriced: { label: 'Unpriced', className: 'bg-[#fde8e8] text-red-800' },
-  price: { label: 'Price drift', className: 'bg-[#f3b4b4] text-red-900' },
-  suspended: { label: 'Suspended', className: 'bg-[#fffbeb] text-amber-900' },
+  unpriced: { label: 'Unpriced', className: 'bg-app-issue-red-bg text-app-issue-red-text' },
+  price: { label: 'Price drift', className: 'bg-app-issue-price-bg text-app-issue-price-text' },
+  suspended: { label: 'Suspended', className: 'bg-app-issue-amber-bg text-app-issue-amber-text' },
 }
 
 function strengthGridColumns(slotCount: number): number {
@@ -151,14 +151,14 @@ function IssueStrengthSlotInput({
     <div
       className={`flex w-full min-w-0 flex-col items-center rounded-md border px-1 py-1 ${
         highlighted
-          ? 'border-[#fca5a5] bg-[#fff5f5] ring-1 ring-inset ring-[#fecaca]'
-          : 'border-[#e5e7eb] bg-[#f9fafb]'
+          ? 'border-app-issue-red-border bg-app-strength-highlight ring-1 ring-inset ring-app-issue-red-ring'
+          : 'border-app-border bg-app-muted'
       }`}
     >
-      <span className="text-[9px] font-semibold leading-none text-gray-600">
+      <span className="text-[9px] font-semibold leading-none text-app-text-muted">
         {outcomeLabel}
       </span>
-      <span className="mt-0.5 text-[9px] leading-none tabular-nums text-gray-400">
+      <span className="mt-0.5 text-[9px] leading-none tabular-nums text-app-text-faint">
         {formatLine(line)}
       </span>
       <input
@@ -231,11 +231,11 @@ function priceCellClass(
   validation: ReturnType<typeof validateMainMarketPriceColumn>,
 ): string {
   if (kind === 'bm0' && validation.hasZeroStrength) {
-    return 'rounded bg-[#fde8e8]'
+    return 'rounded bg-app-issue-red-bg'
   }
 
   if (validation.hasPriceIssue) {
-    return 'rounded bg-[#f3b4b4]'
+    return 'rounded bg-app-issue-price-bg'
   }
 
   return ''
@@ -260,9 +260,9 @@ export function MainMarketIssuesPanel({
   )
 
   return (
-    <div className="min-w-0 w-full bg-white">
-      <div className="border-b border-[#e5e7eb] px-4 py-3 sm:px-6">
-        <h2 className="text-[13px] font-semibold text-gray-900">Main market issues</h2>
+    <div className="min-w-0 w-full bg-app-surface">
+      <div className="border-b border-app-border px-4 py-3 sm:px-6">
+        <h2 className="text-[13px] font-semibold text-app-text">Main market issues</h2>
         <p className={`mt-1 ${TABLE_MICRO_META_CLASS}`}>
           {visibleIssues.length === 0
             ? 'No open issues for this fixture.'
@@ -271,15 +271,15 @@ export function MainMarketIssuesPanel({
       </div>
 
       {visibleIssues.length === 0 ? (
-        <div className="px-4 py-12 text-center text-sm text-gray-500 sm:px-6">
+        <div className="px-4 py-12 text-center text-sm text-app-text-muted sm:px-6">
           All main market columns are healthy.
         </div>
       ) : (
         <div className="p-4 sm:px-6 sm:pb-6">
-          <div className="w-full max-w-full overflow-x-auto rounded-xl border border-[#e5e7eb] bg-white">
+          <div className="w-full max-w-full overflow-x-auto rounded-xl border border-app-border bg-app-surface">
             <table className={`w-full min-w-[52rem] border-collapse text-left ${TABLE_BODY_CLASS}`}>
               <thead>
-                <tr className="bg-[#f9fafb]">
+                <tr className="bg-app-muted">
                   <th className={TABLE_HEAD_CELL_CLASS}>Section</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Market</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Outcome</th>
@@ -300,15 +300,15 @@ export function MainMarketIssuesPanel({
                   return (
                     <tr
                       key={`${issue.marketKey}-${issue.columnIndex}`}
-                      className="border-t border-[#e5e7eb] hover:bg-[#f9fafb]"
+                      className="border-t border-app-border hover:bg-app-muted"
                     >
-                      <td className={`${TABLE_CELL_CLASS} font-medium text-gray-900`}>
+                      <td className={`${TABLE_CELL_CLASS} font-medium text-app-text`}>
                         {issue.sectionLabel}
                       </td>
-                      <td className={`${TABLE_CELL_CLASS} text-gray-700`}>
+                      <td className={`${TABLE_CELL_CLASS} text-app-text-secondary`}>
                         {issue.marketLabel}
                       </td>
-                      <td className={`${TABLE_CELL_CLASS} text-gray-700`}>
+                      <td className={`${TABLE_CELL_CLASS} text-app-text-secondary`}>
                         {issue.columnLabel}
                       </td>
                       <td className={`${TABLE_CELL_CLASS} min-w-[10rem]`}>

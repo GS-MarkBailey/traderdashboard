@@ -76,25 +76,25 @@ const SECTION_CONTAINER_STYLES: Record<
   }
 > = {
   trading: {
-    container: 'border-[#e5e7eb] bg-[#f9fafb]',
-    sidebar: 'border-[#e5e7eb] bg-white',
-    header: 'border-[#e5e7eb] bg-white',
-    strengthBand: 'border-[#e5e7eb] bg-white',
-    marketArea: 'bg-[#f9fafb]',
+    container: 'border-app-border bg-app-muted',
+    sidebar: 'border-app-border bg-app-surface',
+    header: 'border-app-border bg-app-surface',
+    strengthBand: 'border-app-border bg-app-surface',
+    marketArea: 'bg-app-muted',
   },
   suspended: {
-    container: 'border-[#fcd34d] bg-[#fffbeb]',
-    sidebar: 'border-[#fcd34d] bg-[#fffbeb]',
-    header: 'border-[#fcd34d] bg-[#fffbeb]',
-    strengthBand: 'border-[#fcd34d] bg-[#fffbeb]',
-    marketArea: 'bg-[#fffbeb]',
+    container: 'border-app-issue-amber-border bg-app-issue-amber-bg',
+    sidebar: 'border-app-issue-amber-border bg-app-issue-amber-bg',
+    header: 'border-app-issue-amber-border bg-app-issue-amber-bg',
+    strengthBand: 'border-app-issue-amber-border bg-app-issue-amber-bg',
+    marketArea: 'bg-app-issue-amber-bg',
   },
   closed: {
-    container: 'border-[#fca5a5] bg-[#fde8e8]',
-    sidebar: 'border-[#fca5a5] bg-[#fde8e8]',
-    header: 'border-[#fca5a5] bg-[#fde8e8]',
-    strengthBand: 'border-[#fca5a5] bg-[#fde8e8]',
-    marketArea: 'bg-[#fde8e8]',
+    container: 'border-app-issue-red-border bg-app-issue-red-bg',
+    sidebar: 'border-app-issue-red-border bg-app-issue-red-bg',
+    header: 'border-app-issue-red-border bg-app-issue-red-bg',
+    strengthBand: 'border-app-issue-red-border bg-app-issue-red-bg',
+    marketArea: 'bg-app-issue-red-bg',
   },
 }
 
@@ -104,15 +104,15 @@ const MODE_BUTTON_STYLES: Record<
 > = {
   trading: {
     active: 'bg-gray-900 text-white',
-    inactive: 'text-gray-500 hover:bg-gray-50',
+    inactive: 'text-app-text-muted hover:bg-app-hover',
   },
   suspended: {
     active: 'bg-amber-400 text-amber-950',
-    inactive: 'text-gray-500 hover:bg-amber-50',
+    inactive: 'text-app-text-muted hover:bg-amber-50',
   },
   closed: {
     active: 'bg-red-600 text-white',
-    inactive: 'text-gray-500 hover:bg-red-50',
+    inactive: 'text-app-text-muted hover:bg-red-50',
   },
 }
 
@@ -124,7 +124,7 @@ function SectionModeButtons({
   onChange: (status: MainMarketSectionStatus) => void
 }) {
   return (
-    <div className="flex shrink-0 rounded border border-gray-200 bg-white p-0.5">
+    <div className="flex shrink-0 rounded border border-app-border bg-app-surface p-0.5">
       {SECTION_STATUS_MODES.map((mode) => {
         const isActive = status === mode.value
 
@@ -158,14 +158,14 @@ function LayoutToggle({
   onChange: (layout: MainMarketsLayout) => void
 }) {
   return (
-    <div className="flex rounded-lg border border-gray-200 bg-white p-0.5">
+    <div className="flex rounded-lg border border-app-border bg-app-surface p-0.5">
       <button
         type="button"
         onClick={() => onChange('stacked')}
         className={`rounded-md p-1.5 transition-colors ${
           layout === 'stacked'
-            ? 'bg-gray-100 text-gray-900'
-            : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-app-subtle text-app-text'
+            : 'text-app-text-muted hover:bg-app-hover'
         }`}
         aria-label="Stacked layout"
         title="Stacked layout"
@@ -177,8 +177,8 @@ function LayoutToggle({
         onClick={() => onChange('columns')}
         className={`rounded-md p-1.5 transition-colors ${
           layout === 'columns'
-            ? 'bg-gray-100 text-gray-900'
-            : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-app-subtle text-app-text'
+            : 'text-app-text-muted hover:bg-app-hover'
         }`}
         aria-label="Columns layout"
         title="Columns layout"
@@ -411,11 +411,11 @@ function getMainMarketCellAlertClass(
   validation: ReturnType<typeof validateMainMarketPriceColumn>,
 ): string {
   if (rowId === 'bm0' && validation.hasZeroStrength) {
-    return 'bg-[#fde8e8]'
+    return 'bg-app-issue-red-bg'
   }
 
   if (validation.hasPriceIssue && (rowId === 'bm0' || rowId === 'primary')) {
-    return 'bg-[#f3b4b4]'
+    return 'bg-app-issue-price-bg'
   }
 
   return ''
@@ -516,7 +516,7 @@ function MainMarketPriceCell({
 }
 
 const compactMarketCardClass =
-  'h-fit min-w-0 self-start overflow-hidden rounded border border-[#e5e7eb] bg-white px-1.5 py-1 @min-[64rem]:min-w-[175px]'
+  'h-fit min-w-0 self-start overflow-hidden rounded border border-app-border bg-app-surface px-1.5 py-1 @min-[64rem]:min-w-[175px]'
 
 function columnsSectionMarketGridClass(isWide: boolean): string {
   return isWide
@@ -587,7 +587,7 @@ function MarketPriceTable({
   return (
     <div className="min-w-0 w-full overflow-hidden">
       <table
-        className={`w-full table-fixed ${TABLE_BODY_CLASS} ${compact ? 'mt-1' : 'mt-2 border-t border-[#e5e7eb] pt-2'}`}
+        className={`w-full table-fixed ${TABLE_BODY_CLASS} ${compact ? 'mt-1' : 'mt-2 border-t border-app-border pt-2'}`}
       >
         <colgroup>
           <col style={{ width: compact ? '1.75rem' : '2rem' }} />
@@ -787,7 +787,7 @@ export function MainMarketsPanel({
   )
 
   return (
-    <div className="@container/main-markets min-w-0 w-full overflow-hidden border-b border-[#e5e7eb] bg-white px-2 py-2 sm:px-4 sm:py-3">
+    <div className="@container/main-markets min-w-0 w-full overflow-hidden border-b border-app-border bg-app-surface px-2 py-2 sm:px-4 sm:py-3">
       <CollapsibleSection
         title="Main Markets"
         headerActions={<LayoutToggle layout={layout} onChange={onLayoutChange} />}

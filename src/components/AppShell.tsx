@@ -49,6 +49,7 @@ import { MarketMonitor } from './MarketMonitor'
 import { PlayerGridTable } from './PlayerGridTable'
 import { ScreenTabs, type AppScreen } from './ScreenTabs'
 import { TierSelect } from './TierSelect'
+import { ThemeSelect } from './ThemeSelect'
 
 const MATCH_TICK_MS = 5000
 
@@ -268,8 +269,8 @@ export function AppShell() {
   }, [screen, setMatchMinute])
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#f8f9fb]">
-      <header className="z-30 flex w-full shrink-0 flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-4 py-3">
+    <div className="flex h-screen flex-col overflow-hidden bg-app-bg">
+      <header className="z-30 flex w-full shrink-0 flex-wrap items-center gap-3 border-b border-app-border bg-app-surface px-4 py-3">
         <img
           src="/genius-sports-logo.png"
           alt="Genius Sports"
@@ -280,11 +281,12 @@ export function AppShell() {
 
         <div className="ml-auto flex flex-wrap items-center gap-3">
           {screen === 'monitor' && navigation.kind === 'fixture' && players.length > 0 ? (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-app-text-muted">
               {players.length} players loaded
             </span>
           ) : null}
 
+          <ThemeSelect />
           <TierSelect value={tier} onChange={setTier} />
         </div>
       </header>
@@ -334,7 +336,7 @@ export function AppShell() {
                 redCardScore={fixtureRedCardScore}
                 redCardHasDataIssue={fixtureRedCardHasDataIssue}
               />
-              <div className="bg-white px-2 pt-2 sm:px-4 sm:pt-3">
+              <div className="bg-app-surface px-2 pt-2 sm:px-4 sm:pt-3">
                 <ScreenTabs value={screen} onChange={setScreen} />
               </div>
               {screen === 'manage' ? (
@@ -372,7 +374,7 @@ export function AppShell() {
               )}
             </div>
           ) : (
-            <div className="flex h-full min-h-[16rem] items-center justify-center p-6 text-sm text-gray-500">
+            <div className="flex h-full min-h-[16rem] items-center justify-center p-6 text-sm text-app-text-muted">
               Select a league or fixture from the sidebar.
             </div>
           )}

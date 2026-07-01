@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
   font-family: 'ES Klarheit Kurrent';
   src:
@@ -28,6 +30,74 @@
 
 @theme {
   --font-heading: 'ES Klarheit Kurrent', 'Klarheit Kurrent', system-ui, sans-serif;
+
+  --color-app-bg: #f8f9fb;
+  --color-app-surface: #ffffff;
+  --color-app-muted: #f9fafb;
+  --color-app-subtle: #f3f4f6;
+  --color-app-hover: #f9fafb;
+  --color-app-border: #e5e7eb;
+  --color-app-text: #111827;
+  --color-app-text-secondary: #374151;
+  --color-app-text-muted: #6b7280;
+  --color-app-text-faint: #9ca3af;
+  --color-app-input-border: #d1d5db;
+  --color-app-input-bg: #ffffff;
+  --color-app-input-readonly: #f3f4f6;
+  --color-app-focus: #93c5fd;
+  --color-app-selected-bg: #eff6ff;
+  --color-app-selected-text: #1d4ed8;
+  --color-app-selected-hover: #dbeafe;
+  --color-app-strength-highlight: #fff5f5;
+  --color-app-issue-soft: #fdf0f0;
+  --color-app-issue-amber-border: #fcd34d;
+  --color-app-issue-red-bg: #fde8e8;
+  --color-app-issue-red-text: #991b1b;
+  --color-app-issue-red-border: #fca5a5;
+  --color-app-issue-red-ring: #fecaca;
+  --color-app-issue-price-bg: #f3b4b4;
+  --color-app-issue-price-text: #7f1d1d;
+  --color-app-issue-amber-bg: #fffbeb;
+  --color-app-issue-amber-text: #92400e;
+  --color-app-chart-grid: #e5e7eb;
+  --color-app-chart-line: #374151;
+  --color-app-chart-fill: #f3f4f6;
+  --color-app-chart-marker: #d1d5db;
+}
+
+.dark {
+  --color-app-bg: #0b0d12;
+  --color-app-surface: #13161e;
+  --color-app-muted: #181c24;
+  --color-app-subtle: #1f2430;
+  --color-app-hover: #1c212b;
+  --color-app-border: #2d3544;
+  --color-app-text: #f3f4f6;
+  --color-app-text-secondary: #d1d5db;
+  --color-app-text-muted: #9ca3af;
+  --color-app-text-faint: #6b7280;
+  --color-app-input-border: #3d4656;
+  --color-app-input-bg: #1a1f2a;
+  --color-app-input-readonly: #232833;
+  --color-app-focus: #3b82f6;
+  --color-app-selected-bg: #1e3a5f;
+  --color-app-selected-text: #93c5fd;
+  --color-app-selected-hover: #1e3a5f;
+  --color-app-strength-highlight: #2a1a1a;
+  --color-app-issue-soft: #2a1a1a;
+  --color-app-issue-amber-border: #92400e;
+  --color-app-issue-red-bg: #3f1d1d;
+  --color-app-issue-red-text: #fecaca;
+  --color-app-issue-red-border: #7f1d1d;
+  --color-app-issue-red-ring: #991b1b;
+  --color-app-issue-price-bg: #5c2020;
+  --color-app-issue-price-text: #fecaca;
+  --color-app-issue-amber-bg: #3b2f12;
+  --color-app-issue-amber-text: #fde68a;
+  --color-app-chart-grid: #2d3544;
+  --color-app-chart-line: #d1d5db;
+  --color-app-chart-fill: #1f2430;
+  --color-app-chart-marker: #4b5563;
 }
 
 * {
@@ -38,8 +108,8 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #f8f9fb;
-  color: #1a1a1a;
+  background: var(--color-app-bg);
+  color: var(--color-app-text);
 }
 
 #root {

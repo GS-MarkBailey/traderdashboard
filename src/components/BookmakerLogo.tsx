@@ -87,14 +87,14 @@ function BookmakerLogoPopover({
         transform: 'translateX(-50%)',
       }}
     >
-      <span className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-2 shadow-lg">
+      <span className="flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-2.5 py-2 shadow-lg">
         <BookmakerMark
           bookmaker={bookmaker}
           size="lg"
           preferFallback={preferFallback}
           onImageError={onImageError}
         />
-        <span className="text-[11px] font-medium whitespace-nowrap text-gray-700">
+        <span className="text-[11px] font-medium whitespace-nowrap text-app-text-secondary">
           {config.label}
         </span>
       </span>

@@ -103,6 +103,24 @@ export const CELL_STATUS_DOT: Record<
   multiple: { color: '#991b1b', label: 'Price + line' },
 }
 
+const CELL_STATUS_DOT_DARK: Record<
+  CellHealthStatus,
+  { color: string; label: string }
+> = {
+  healthy: { color: '#4b5563', label: 'Healthy' },
+  suspended: { color: '#fbbf24', label: 'Suspended' },
+  unpriced: { color: '#f87171', label: 'Unpriced' },
+  price: { color: '#ef4444', label: 'Price drift' },
+  line: { color: '#ef4444', label: 'Line mismatch' },
+  multiple: { color: '#fca5a5', label: 'Price + line' },
+}
+
+export function getCellStatusDot(
+  theme: 'light' | 'dark',
+): Record<CellHealthStatus, { color: string; label: string }> {
+  return theme === 'dark' ? CELL_STATUS_DOT_DARK : CELL_STATUS_DOT
+}
+
 export function getCellHealthStatus(
   market: Player['markets'][MarketKey],
   ourPrice: number | null,

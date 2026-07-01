@@ -110,10 +110,10 @@ export function useMarketCellEditor({
     !isSuspended &&
     (validation.hasZeroStrength || validation.hasPriceIssue || validation.hasLineIssue)
 
-  let rowBg = 'bg-white'
-  if (isSuspended) rowBg = 'bg-[#fffbeb]'
-  else if (validation.hasZeroStrength) rowBg = 'bg-[#fde8e8]'
-  else if (hasIssue) rowBg = 'bg-[#fdf0f0]'
+  let rowBg = 'bg-app-surface'
+  if (isSuspended) rowBg = 'bg-app-issue-amber-bg'
+  else if (validation.hasZeroStrength) rowBg = 'bg-app-issue-red-bg'
+  else if (hasIssue) rowBg = 'bg-app-issue-soft'
 
   const priceAlert = !isSuspended && validation.hasPriceIssue
   const lineAlert = !isSuspended && validation.hasLineIssue
