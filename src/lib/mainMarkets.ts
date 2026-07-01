@@ -305,6 +305,37 @@ export function getMarketPriceColumns(
   }
 }
 
+export interface MainMarketStrengthSlot {
+  slotIndex: number
+  line: number
+  outcomeLabel: string
+}
+
+/** Strength slots referenced by a market's price columns (many-to-many at section level). */
+export function getMarketStrengthSlots(
+  marketKey: MainMarketKey,
+  sectionId: MainMarketSectionId,
+): MainMarketStrengthSlot[] {
+  const section = getMainMarketSection(sectionId)
+  const columns = getMarketPriceColumns(marketKey, sectionId)
+  const outcomeBySlot = new Map<number, string>()
+
+  for (const column of columns) {
+    if (column.kind === 'line') continue
+    if (!outcomeBySlot.has(column.strengthSlotIndex)) {
+      outcomeBySlot.set(column.strengthSlotIndex, column.label)
+    }
+  }
+
+  return [...outcomeBySlot.entries()]
+    .sort(([left], [right]) => left - right)
+    .map(([slotIndex, outcomeLabel]) => ({
+      slotIndex,
+      line: section.strengthLines[slotIndex] ?? 0.5,
+      outcomeLabel,
+    }))
+}
+
 function roundPrice(value: number): number {
   return Math.round(value * 100) / 100
 }

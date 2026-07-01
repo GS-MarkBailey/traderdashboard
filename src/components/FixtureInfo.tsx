@@ -37,8 +37,8 @@ function MetadataItem({
   leading?: ReactNode
 }) {
   return (
-    <>
-      <dt className={`${TABLE_MICRO_LABEL_CLASS} whitespace-nowrap`}>{label}</dt>
+    <div className="flex min-w-0 items-center gap-1.5">
+      <dt className={`${TABLE_MICRO_LABEL_CLASS} shrink-0 whitespace-nowrap`}>{label}</dt>
       <dd
         className={`flex min-w-0 items-center gap-1 ${TABLE_ROW_LABEL_CLASS} font-medium text-gray-700 ${
           tabular ? 'tabular-nums' : ''
@@ -47,7 +47,7 @@ function MetadataItem({
         {leading}
         <span className="min-w-0 truncate">{value}</span>
       </dd>
-    </>
+    </div>
   )
 }
 
@@ -74,7 +74,7 @@ export function FixtureInfo({
             ) : null}
           </div>
 
-          <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1">
+          <dl className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1">
             <MetadataItem label="ID" value={fixture.id} />
             <MetadataItem label="K/O" value={formatKickoffDateTime(fixture.kickoffAt)} tabular />
             <MetadataItem

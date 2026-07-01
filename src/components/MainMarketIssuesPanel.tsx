@@ -16,6 +16,7 @@ import {
 } from '../lib/pricing'
 import {
   getMainMarketSection,
+  getMarketStrengthSlots,
 } from '../lib/mainMarkets'
 import {
   buildMainMarketHealthSnapshot,
@@ -29,7 +30,7 @@ import {
   TABLE_MICRO_META_CLASS,
   TABLE_PRICE_PRIMARY_CLASS,
   TABLE_PRICE_SECONDARY_CLASS,
-  TABLE_STRENGTH_INPUT_BASE_CLASS,
+  tableStrengthInputClass,
 } from '../lib/tableTypography'
 import { BookmakerLogo } from './BookmakerLogo'
 
@@ -53,14 +54,16 @@ const ISSUE_BADGE: Record<
 }
 
 function strengthGridColumns(slotCount: number): number {
-  if (slotCount <= 2) return slotCount
-  return 3
+  if (slotCount <= 3) return slotCount
+  if (slotCount <= 6) return 3
+  return 4
 }
 
 function IssueStrengthSlotInput({
   sectionId,
   slotIndex,
   line,
+  outcomeLabel,
   strength,
   status,
   highlighted,
@@ -69,6 +72,7 @@ function IssueStrengthSlotInput({
   sectionId: MainMarketSectionId
   slotIndex: number
   line: number
+  outcomeLabel: string
   strength: number
   status: MainMarketSectionStatus
   highlighted: boolean
@@ -142,19 +146,21 @@ function IssueStrengthSlotInput({
   }
 
   const hasValue = parseStrengthInput(draft) > 0
-  const inputColorClass = hasValue
-    ? 'text-[#374151]'
-    : 'text-[#9ca3af] focus:text-[#374151]'
 
   return (
     <div
-      className={`w-[2.65rem] ${
-        highlighted ? 'rounded ring-1 ring-inset ring-[#fca5a5] bg-[#fff5f5]' : ''
+      className={`flex w-full min-w-0 flex-col items-center rounded-md border px-1 py-1 ${
+        highlighted
+          ? 'border-[#fca5a5] bg-[#fff5f5] ring-1 ring-inset ring-[#fecaca]'
+          : 'border-[#e5e7eb] bg-[#f9fafb]'
       }`}
     >
-      <p className="truncate text-[9px] leading-none tabular-nums text-gray-400">
+      <span className="text-[9px] font-semibold leading-none text-gray-600">
+        {outcomeLabel}
+      </span>
+      <span className="mt-0.5 text-[9px] leading-none tabular-nums text-gray-400">
         {formatLine(line)}
-      </p>
+      </span>
       <input
         ref={inputRef}
         type="text"
@@ -179,8 +185,8 @@ function IssueStrengthSlotInput({
         onKeyDown={handleKeyDown}
         readOnly={status === 'closed'}
         disabled={status === 'suspended'}
-        className={`mt-px h-4 w-full px-0.5 ${TABLE_STRENGTH_INPUT_BASE_CLASS} ${inputColorClass}`}
-        aria-label={`${getMainMarketSection(sectionId).label} slot ${slotIndex + 1} strength`}
+        className={`mt-1 ${tableStrengthInputClass(hasValue)}`}
+        aria-label={`${getMainMarketSection(sectionId).label} ${outcomeLabel} strength`}
       />
     </div>
   )
@@ -195,23 +201,24 @@ function IssueSectionStrengthInputs({
   strengths: number[]
   onApply: MainMarketIssuesPanelProps['onApplySectionStrength']
 }) {
-  const section = getMainMarketSection(issue.sectionId)
-  const columns = strengthGridColumns(section.strengthSlotCount)
+  const marketSlots = getMarketStrengthSlots(issue.marketKey, issue.sectionId)
+  const columns = strengthGridColumns(marketSlots.length)
 
   return (
     <div
-      className="grid w-fit gap-0.5"
-      style={{ gridTemplateColumns: `repeat(${columns}, 2.65rem)` }}
+      className="grid w-full gap-1.5"
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
     >
-      {section.strengthLines.map((line, slotIndex) => (
+      {marketSlots.map((slot) => (
         <IssueStrengthSlotInput
-          key={`${issue.sectionId}-${slotIndex}`}
+          key={`${issue.marketKey}-${slot.slotIndex}`}
           sectionId={issue.sectionId}
-          slotIndex={slotIndex}
-          line={line}
-          strength={strengths[slotIndex] ?? 0}
+          slotIndex={slot.slotIndex}
+          line={slot.line}
+          outcomeLabel={slot.outcomeLabel}
+          strength={strengths[slot.slotIndex] ?? 0}
           status={issue.sectionStatus}
-          highlighted={slotIndex === issue.strengthSlotIndex}
+          highlighted={slot.slotIndex === issue.strengthSlotIndex}
           onApply={onApply}
         />
       ))}
@@ -276,7 +283,7 @@ export function MainMarketIssuesPanel({
                   <th className={TABLE_HEAD_CELL_CLASS}>Section</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Market</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Outcome</th>
-                  <th className={TABLE_HEAD_CELL_CLASS}>Strength</th>
+                  <th className={`${TABLE_HEAD_CELL_CLASS} min-w-[10rem]`}>Strength</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Our price</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Bookmaker</th>
                   <th className={TABLE_HEAD_CELL_CLASS}>Issue</th>
@@ -304,7 +311,7 @@ export function MainMarketIssuesPanel({
                       <td className={`${TABLE_CELL_CLASS} text-gray-700`}>
                         {issue.columnLabel}
                       </td>
-                      <td className={TABLE_CELL_CLASS}>
+                      <td className={`${TABLE_CELL_CLASS} min-w-[10rem]`}>
                         <IssueSectionStrengthInputs
                           issue={issue}
                           strengths={settings.sectionStrengths[issue.sectionId] ?? []}

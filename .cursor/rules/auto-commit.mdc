@@ -1,0 +1,20 @@
+---
+description: Commit code changes automatically after completing implementation work
+alwaysApply: true
+---
+
+# Auto-commit
+
+After finishing implementation work in this repo (features, fixes, refactors, UI tweaks):
+
+1. Run `git status` and `git diff` to review what changed.
+2. Stage only relevant project files — never commit secrets (`.env`, credentials).
+3. Create a concise commit focused on **why** the change was made.
+4. Push to `origin/main` when the branch tracks it, so Vercel deploys from GitHub.
+
+Skip committing when:
+- The user is only asking questions or reviewing code with no edits.
+- Changes are experimental and the user asked to hold off.
+- There are no file changes to commit.
+
+Do not amend pushed commits unless the user explicitly requests it.
