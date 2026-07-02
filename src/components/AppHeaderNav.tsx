@@ -1,4 +1,4 @@
-export type AppNavSection = 'fixtures'
+export type AppNavSection = 'fixtures' | 'trading'
 
 interface AppHeaderNavProps {
   value: AppNavSection
@@ -7,6 +7,7 @@ interface AppHeaderNavProps {
 
 const NAV_SECTIONS: { value: AppNavSection; label: string }[] = [
   { value: 'fixtures', label: 'Fixtures' },
+  { value: 'trading', label: 'Trading' },
 ]
 
 export function AppHeaderNav({ value, onChange }: AppHeaderNavProps) {

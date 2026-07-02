@@ -50,6 +50,7 @@ import { PlayerGridTable } from './PlayerGridTable'
 import { ScreenTabs, type AppScreen } from './ScreenTabs'
 import { TierSelect } from './TierSelect'
 import { ThemeSelect } from './ThemeSelect'
+import { TradingView } from './TradingView'
 
 const MATCH_TICK_MS = 5000
 
@@ -292,18 +293,22 @@ export function AppShell() {
       </header>
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        <FixtureTaxonomyAside
-          taxonomy={taxonomy}
-          navigation={navigation}
-          onSelectSport={handleSelectSport}
-          onSelectCountry={handleSelectCountry}
-          onSelectLeague={handleSelectLeague}
-          onSelectFixture={handleSelectFixture}
-        />
+        {appSection === 'fixtures' ? (
+          <FixtureTaxonomyAside
+            taxonomy={taxonomy}
+            navigation={navigation}
+            onSelectSport={handleSelectSport}
+            onSelectCountry={handleSelectCountry}
+            onSelectLeague={handleSelectLeague}
+            onSelectFixture={handleSelectFixture}
+          />
+        ) : null}
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
-          {navigation.kind === 'sport' && selectedSport ? (
+          {appSection === 'trading' ? (
+            <TradingView />
+          ) : navigation.kind === 'sport' && selectedSport ? (
             <FixtureListView
               title={selectedSport.sportName}
               entries={selectedSport.entries}
