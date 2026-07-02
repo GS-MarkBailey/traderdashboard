@@ -16,7 +16,7 @@ export function SportIcon({
       aria-hidden
       loading="lazy"
       decoding="async"
-      className={className}
+      className={`${className} brightness-0 dark:invert`}
     />
   )
 }
