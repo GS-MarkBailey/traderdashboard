@@ -274,7 +274,7 @@ export function AppShell() {
         <img
           src="/genius-sports-logo.png"
           alt="Genius Sports"
-          className="h-8 w-auto shrink-0 object-contain"
+          className="h-8 w-auto shrink-0 object-contain brightness-0 dark:invert"
         />
 
         <AppHeaderNav value={appSection} onChange={setAppSection} />
