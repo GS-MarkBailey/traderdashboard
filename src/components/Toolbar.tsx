@@ -48,6 +48,7 @@ function countActiveFilters(
   pricingFilter: PricingFilter,
   statusFilter: StatusFilter,
   issueFilter: IssueFilter,
+  competitionFilter?: string,
 ): number {
   let count = 0
   if (strengthMode !== 'absolute') count += 1
@@ -55,6 +56,7 @@ function countActiveFilters(
   if (pricingFilter !== 'all') count += 1
   if (statusFilter !== 'all') count += 1
   if (issueFilter !== 'all') count += 1
+  if (competitionFilter && competitionFilter !== 'all') count += 1
   return count
 }
 
@@ -65,11 +67,14 @@ interface PlayerFiltersDropdownProps {
   pricingFilter: PricingFilter
   statusFilter: StatusFilter
   issueFilter: IssueFilter
+  competitions?: string[]
+  competitionFilter?: string
   onStrengthModeChange: (mode: StrengthMode) => void
   onTeamFilterChange: (value: TeamFilter) => void
   onPricingFilterChange: (value: PricingFilter) => void
   onStatusFilterChange: (value: StatusFilter) => void
   onIssueFilterChange: (value: IssueFilter) => void
+  onCompetitionFilterChange?: (value: string) => void
 }
 
 function PlayerFiltersDropdown({
@@ -79,11 +84,14 @@ function PlayerFiltersDropdown({
   pricingFilter,
   statusFilter,
   issueFilter,
+  competitions,
+  competitionFilter = 'all',
   onStrengthModeChange,
   onTeamFilterChange,
   onPricingFilterChange,
   onStatusFilterChange,
   onIssueFilterChange,
+  onCompetitionFilterChange,
 }: PlayerFiltersDropdownProps) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -93,6 +101,7 @@ function PlayerFiltersDropdown({
     pricingFilter,
     statusFilter,
     issueFilter,
+    competitionFilter,
   )
 
   useEffect(() => {
@@ -205,6 +214,24 @@ function PlayerFiltersDropdown({
                 onChange={onIssueFilterChange}
               />
             </FilterSection>
+
+            {competitions && competitions.length > 0 && onCompetitionFilterChange ? (
+              <FilterSection label="Competition">
+                <select
+                  value={competitionFilter}
+                  onChange={(event) => onCompetitionFilterChange(event.target.value)}
+                  className="w-full rounded-lg border border-app-border bg-app-surface px-2.5 py-1.5 text-xs text-app-text-secondary outline-none focus:border-app-focus"
+                  aria-label="Filter by competition"
+                >
+                  <option value="all">All competitions</option>
+                  {competitions.map((competition) => (
+                    <option key={competition} value={competition}>
+                      {competition}
+                    </option>
+                  ))}
+                </select>
+              </FilterSection>
+            ) : null}
           </div>
         </div>
       ) : null}
@@ -250,6 +277,10 @@ interface ToolbarProps {
   onStatusFilterChange: (value: StatusFilter) => void
   onIssueFilterChange: (value: IssueFilter) => void
   onViewModeChange: (mode: ViewMode) => void
+  showViewMode?: boolean
+  competitions?: string[]
+  competitionFilter?: string
+  onCompetitionFilterChange?: (value: string) => void
 }
 
 export function Toolbar({
@@ -273,6 +304,10 @@ export function Toolbar({
   onStatusFilterChange,
   onIssueFilterChange,
   onViewModeChange,
+  showViewMode = true,
+  competitions,
+  competitionFilter,
+  onCompetitionFilterChange,
 }: ToolbarProps) {
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-app-border bg-app-muted px-4 py-3">
@@ -312,13 +347,17 @@ export function Toolbar({
           pricingFilter={pricingFilter}
           statusFilter={statusFilter}
           issueFilter={issueFilter}
+          competitions={competitions}
+          competitionFilter={competitionFilter}
           onStrengthModeChange={onStrengthModeChange}
           onTeamFilterChange={onTeamFilterChange}
           onPricingFilterChange={onPricingFilterChange}
           onStatusFilterChange={onStatusFilterChange}
           onIssueFilterChange={onIssueFilterChange}
+          onCompetitionFilterChange={onCompetitionFilterChange}
         />
 
+        {showViewMode ? (
         <div className="flex rounded-lg border border-app-border bg-app-surface p-0.5">
           <button
             type="button"
@@ -347,6 +386,7 @@ export function Toolbar({
             <ListIcon />
           </button>
         </div>
+        ) : null}
       </div>
     </div>
   )

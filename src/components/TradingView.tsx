@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { MarketKey, StrengthMode, TableFilters } from '../types/trading'
+import type { MarketKey, StrengthMode } from '../types/trading'
 import { MARKET_COLUMNS } from '../types/trading'
 import {
   filterTradingCellRows,
@@ -24,9 +24,8 @@ import {
   buildTradingFixtureBundles,
   getTradingCompetitions,
 } from '../lib/tradingAggregate'
-import { ProposalsPopover } from './ProposalsPopover'
 import { PlayerListTable } from './PlayerListTable'
-import { FORM_SELECT_CLASS } from '../lib/tableTypography'
+import { Toolbar } from './Toolbar'
 
 const DEFAULT_FILTERS: TradingTableFilters = {
   search: '',
@@ -304,76 +303,38 @@ export function TradingView() {
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-b border-app-border bg-app-muted px-4 py-3 sm:px-6">
-        <ProposalsPopover
-          proposals={proposalSummaries}
-          visible={proposalSummaries.length > 0}
-          onConfirmAll={() => submitAllProposals()}
-          onRejectAll={() => setProposals({})}
-          onRejectOne={(key) =>
-            setProposals((current) => {
-              if (!(key in current)) return current
-              const { [key]: _, ...rest } = current
-              return rest
-            })
-          }
-        />
-
-        <input
-          type="search"
-          placeholder="Search players…"
-          value={filters.search}
-          onChange={(event) => updateFilter('search', event.target.value)}
-          className="w-44 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text-secondary outline-none placeholder:text-app-text-faint focus:border-app-focus"
-        />
-
-        <label className="flex items-center gap-2">
-          <span className="text-xs font-medium text-app-text-muted">Competition</span>
-          <select
-            value={filters.competition}
-            onChange={(event) => updateFilter('competition', event.target.value)}
-            className={FORM_SELECT_CLASS}
-            aria-label="Filter by competition"
-          >
-            <option value="all">All competitions</option>
-            {competitions.map((competition) => (
-              <option key={competition} value={competition}>
-                {competition}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="flex items-center gap-2">
-          <span className="text-xs font-medium text-app-text-muted">Strength</span>
-          <select
-            value={strengthMode}
-            onChange={(event) =>
-              setStrengthMode(event.target.value as StrengthMode)
-            }
-            className={FORM_SELECT_CLASS}
-            aria-label="Strength mode"
-          >
-            <option value="absolute">Absolute</option>
-            <option value="relative">Relative</option>
-          </select>
-        </label>
-
-        <label className="flex items-center gap-2">
-          <span className="text-xs font-medium text-app-text-muted">Issues</span>
-          <select
-            value={filters.issues}
-            onChange={(event) =>
-              updateFilter('issues', event.target.value as TableFilters['issues'])
-            }
-            className={FORM_SELECT_CLASS}
-            aria-label="Issue filter"
-          >
-            <option value="all">All rows</option>
-            <option value="highlighted">Issues only</option>
-          </select>
-        </label>
-      </div>
+      <Toolbar
+        hasPlayers
+        strengthMode={strengthMode}
+        search={filters.search}
+        teamFilter={filters.team}
+        pricingFilter={filters.pricing}
+        statusFilter={filters.status}
+        issueFilter={filters.issues}
+        viewMode="list"
+        proposals={proposalSummaries}
+        onImport={() => {}}
+        onConfirmAllProposals={() => submitAllProposals()}
+        onRejectAllProposals={() => setProposals({})}
+        onRejectProposal={(key) =>
+          setProposals((current) => {
+            if (!(key in current)) return current
+            const { [key]: _, ...rest } = current
+            return rest
+          })
+        }
+        onStrengthModeChange={setStrengthMode}
+        onSearchChange={(value) => updateFilter('search', value)}
+        onTeamFilterChange={(value) => updateFilter('team', value)}
+        onPricingFilterChange={(value) => updateFilter('pricing', value)}
+        onStatusFilterChange={(value) => updateFilter('status', value)}
+        onIssueFilterChange={(value) => updateFilter('issues', value)}
+        onViewModeChange={() => {}}
+        showViewMode={false}
+        competitions={competitions}
+        competitionFilter={filters.competition}
+        onCompetitionFilterChange={(value) => updateFilter('competition', value)}
+      />
 
       <div className="p-4 sm:px-6 sm:pb-6">
         <PlayerListTable
