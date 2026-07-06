@@ -29,6 +29,9 @@ interface MarketListRowProps {
   marketKey: MarketKey
   marketLabel: string
   cellKey: string
+  fixtureId?: string
+  competition?: string
+  showFixtureColumns?: boolean
   proposedStrength: number | null
   strengthMode: StrengthMode
   maxStrengthInMatch: number
@@ -58,6 +61,9 @@ export function MarketListRow({
   marketKey,
   marketLabel,
   cellKey,
+  fixtureId,
+  competition,
+  showFixtureColumns = false,
   proposedStrength,
   strengthMode,
   maxStrengthInMatch,
@@ -83,6 +89,20 @@ export function MarketListRow({
 
   return (
     <tr className={editor.rowBg}>
+      {showFixtureColumns ? (
+        <>
+          <td className={`${cellClass} ${editor.rowBg}`}>
+            <TruncatedText className={`block ${TABLE_LABEL_CLASS} tabular-nums`}>
+              {fixtureId ?? '—'}
+            </TruncatedText>
+          </td>
+          <td className={`${cellClass} ${editor.rowBg}`}>
+            <TruncatedText className={`block ${TABLE_LABEL_CLASS}`}>
+              {competition ?? '—'}
+            </TruncatedText>
+          </td>
+        </>
+      ) : null}
       <td className={`${cellClass} text-center ${editor.rowBg}`}>
         <label
           className={`inline-flex items-center justify-center ${mainSectionLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}

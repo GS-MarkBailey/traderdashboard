@@ -256,6 +256,61 @@ const FIXTURE_TAXONOMY: FixtureTaxonomy = [
             'Serie A',
             'Nina Patel',
           ),
+          fixture(
+            'SA-2026-01509',
+            'Juventus',
+            'Napoli',
+            '2026-07-05T19:45:00',
+            'Serie A',
+          ),
+        ],
+      },
+    ],
+    germany: [
+      {
+        id: 'bundesliga',
+        name: 'Bundesliga',
+        logoUrl: '/competitions/bundesliga.svg',
+        fixtures: [
+          fixture(
+            'BL-2026-00901',
+            'Bayern Munich',
+            'Borussia Dortmund',
+            '2026-07-02T19:30:00',
+            'Bundesliga',
+            'Felix Braun',
+          ),
+          fixture(
+            'BL-2026-00908',
+            'Bayer Leverkusen',
+            'RB Leipzig',
+            '2026-07-03T17:30:00',
+            'Bundesliga',
+          ),
+        ],
+      },
+    ],
+    france: [
+      {
+        id: 'ligue-1',
+        name: 'Ligue 1',
+        logoUrl: '/competitions/ligue-1.svg',
+        fixtures: [
+          fixture(
+            'L1-2026-00712',
+            'Paris Saint-Germain',
+            'Marseille',
+            '2026-07-04T20:00:00',
+            'Ligue 1',
+            'Camille Dubois',
+          ),
+          fixture(
+            'L1-2026-00719',
+            'Lyon',
+            'Monaco',
+            '2026-07-06T20:45:00',
+            'Ligue 1',
+          ),
         ],
       },
     ],

@@ -211,6 +211,7 @@ function createSquadPlayers(
   playerOffset: number,
   bookmakerSequence: BookmakerId[],
   issuePlan: Map<number, IssueKind>,
+  idPrefix?: string,
 ): Player[] {
   return names.map((name, index) => {
     const playerIndex = playerOffset + index
@@ -228,7 +229,7 @@ function createSquadPlayers(
     ) as Record<MarketKey, PlayerMarket>
 
     return {
-      id: `${team}-${index + 1}`,
+      id: idPrefix ? `${idPrefix}-${team}-${index + 1}` : `${team}-${index + 1}`,
       name,
       team,
       teamBadge: badge,
@@ -236,6 +237,50 @@ function createSquadPlayers(
       markets: marketsWithActiveState,
     }
   })
+}
+
+export function generateMockPlayersForSquads({
+  idPrefix,
+  homeSquad,
+  awaySquad,
+  homeBadge,
+  awayBadge,
+  seed = 0,
+}: {
+  idPrefix: string
+  homeSquad: string[]
+  awaySquad: string[]
+  homeBadge: string
+  awayBadge: string
+  seed?: number
+}): Player[] {
+  const totalPlayers = homeSquad.length + awaySquad.length
+  const totalCells = totalPlayers * MARKET_COLUMNS.length
+  const bookmakerSequence = buildPrimaryBookmakerSequence(totalCells)
+  const issuePlan = buildRandomIssuePlan(totalCells)
+
+  const playerOffset = seed * 37
+
+  return [
+    ...createSquadPlayers(
+      homeSquad,
+      'home',
+      homeBadge,
+      playerOffset,
+      bookmakerSequence,
+      issuePlan,
+      idPrefix,
+    ),
+    ...createSquadPlayers(
+      awaySquad,
+      'away',
+      awayBadge,
+      playerOffset + homeSquad.length,
+      bookmakerSequence,
+      issuePlan,
+      idPrefix,
+    ),
+  ]
 }
 
 export function generateMockPlayers(): Player[] {

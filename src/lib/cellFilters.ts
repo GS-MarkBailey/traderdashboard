@@ -16,6 +16,8 @@ export interface FilteredCellRow {
   marketKey: MarketKey
   marketLabel: string
   cellKey: string
+  fixtureId?: string
+  competition?: string
 }
 
 function passesBasePlayerFilters(
@@ -135,4 +137,77 @@ export function filterCellRowsForList(
   }
 
   return rows
+}
+
+export interface TradingFixtureBundle {
+  fixtureId: string
+  competition: string
+  country: string
+  players: Player[]
+}
+
+export interface TradingTableFilters extends TableFilters {
+  competition: string
+}
+
+export function filterTradingCellRows(
+  bundles: TradingFixtureBundle[],
+  filters: TradingTableFilters,
+  strengthMode: StrengthMode,
+  maxStrengthInMatch: number,
+): FilteredCellRow[] {
+  const searchLower = filters.search.trim().toLowerCase()
+  const rows: FilteredCellRow[] = []
+
+  const visibleBundles =
+    filters.competition === 'all'
+      ? bundles
+      : bundles.filter((bundle) => bundle.competition === filters.competition)
+
+  for (const bundle of visibleBundles) {
+    const filteredPlayers = bundle.players
+      .filter((player) => passesBasePlayerFilters(player, filters, searchLower))
+      .sort(comparePlayersDefaultOrder)
+
+    for (const player of filteredPlayers) {
+      for (const column of MARKET_COLUMNS) {
+        const market = player.markets[column.key]
+
+        if (
+          !marketMatchesPricingFilter(
+            market,
+            filters.pricing,
+            strengthMode,
+            maxStrengthInMatch,
+          )
+        ) {
+          continue
+        }
+
+        if (
+          filters.issues === 'highlighted' &&
+          !marketHasHighlightedIssue(market, strengthMode, maxStrengthInMatch)
+        ) {
+          continue
+        }
+
+        rows.push({
+          player,
+          marketKey: column.key,
+          marketLabel: column.label,
+          cellKey: proposalKey(player.id, column.key),
+          fixtureId: bundle.fixtureId,
+          competition: bundle.competition,
+        })
+      }
+    }
+  }
+
+  return rows.sort(
+    (left, right) =>
+      (left.competition ?? '').localeCompare(right.competition ?? '') ||
+      (left.fixtureId ?? '').localeCompare(right.fixtureId ?? '') ||
+      comparePlayersDefaultOrder(left.player, right.player) ||
+      left.marketLabel.localeCompare(right.marketLabel),
+  )
 }
