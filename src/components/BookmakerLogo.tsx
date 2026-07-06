@@ -2,6 +2,12 @@ import { useCallback, useState, type MouseEvent } from 'react'
 import { BOOKMAKER_CONFIG, type BookmakerId } from '../lib/bookmakers'
 import { useClearOnScroll } from '../hooks/useClearOnScroll'
 
+const FALLBACK_BOOKMAKER: BookmakerId = 'bet365'
+
+function getBookmakerConfig(bookmaker: BookmakerId) {
+  return BOOKMAKER_CONFIG[bookmaker] ?? BOOKMAKER_CONFIG[FALLBACK_BOOKMAKER]
+}
+
 interface BookmakerLogoProps {
   bookmaker: BookmakerId
   size?: 'xs' | 'sm' | 'md'
@@ -23,7 +29,7 @@ export function BookmakerMark({
   preferFallback?: boolean
   onImageError?: () => void
 }) {
-  const config = BOOKMAKER_CONFIG[bookmaker]
+  const config = getBookmakerConfig(bookmaker)
   const dimension =
     size === 'xs'
       ? 'h-[11px] w-[11px]'
@@ -75,7 +81,7 @@ function BookmakerLogoPopover({
   preferFallback: boolean
   onImageError: () => void
 }) {
-  const config = BOOKMAKER_CONFIG[bookmaker]
+  const config = getBookmakerConfig(bookmaker)
   const offset = 6
 
   return (

@@ -178,7 +178,9 @@ function createMarketForCell(
   issuePlan: Map<number, IssueKind>,
   marketKey: MarketKey,
 ): PlayerMarket {
-  const bookmaker = bookmakerSequence[cellIndex]
+  const localIndex =
+    bookmakerSequence.length > 0 ? cellIndex % bookmakerSequence.length : 0
+  const bookmaker = bookmakerSequence[localIndex] ?? 'bet365'
   const market = createAccurateMarket(cellIndex, bookmaker, marketKey)
   const issueKind = issuePlan.get(cellIndex)
 
@@ -254,19 +256,18 @@ export function generateMockPlayersForSquads({
   awayBadge: string
   seed?: number
 }): Player[] {
+  void seed
   const totalPlayers = homeSquad.length + awaySquad.length
   const totalCells = totalPlayers * MARKET_COLUMNS.length
   const bookmakerSequence = buildPrimaryBookmakerSequence(totalCells)
   const issuePlan = buildRandomIssuePlan(totalCells)
-
-  const playerOffset = seed * 37
 
   return [
     ...createSquadPlayers(
       homeSquad,
       'home',
       homeBadge,
-      playerOffset,
+      0,
       bookmakerSequence,
       issuePlan,
       idPrefix,
@@ -275,7 +276,7 @@ export function generateMockPlayersForSquads({
       awaySquad,
       'away',
       awayBadge,
-      playerOffset + homeSquad.length,
+      homeSquad.length,
       bookmakerSequence,
       issuePlan,
       idPrefix,
