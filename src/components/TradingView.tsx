@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { MarketKey, StrengthMode, TableFilters } from '../types/trading'
 import { MARKET_COLUMNS } from '../types/trading'
 import {
@@ -37,18 +37,53 @@ const DEFAULT_FILTERS: TradingTableFilters = {
   competition: 'all',
 }
 
+const PAGE_SIZE = 75
+
+function maxStrengthAcrossPlayers(
+  players: TradingFixtureBundle['players'],
+  getStrengthForCell: (playerId: string, marketKey: MarketKey, committed: number) => number,
+): number {
+  let max = 0
+
+  for (const player of players) {
+    for (const column of MARKET_COLUMNS) {
+      const strength = getStrengthForCell(
+        player.id,
+        column.key,
+        player.markets[column.key].strength,
+      )
+      if (strength > max) max = strength
+    }
+  }
+
+  return max
+}
+
 export function TradingView() {
-  const [bundles, setBundles] = useState<TradingFixtureBundle[]>(() =>
-    buildTradingFixtureBundles(),
-  )
+  const [bundles, setBundles] = useState<TradingFixtureBundle[] | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [page, setPage] = useState(0)
   const [proposals, setProposals] = useState<ProposalMap>({})
   const [filters, setFilters] = useState<TradingTableFilters>(DEFAULT_FILTERS)
   const [strengthMode, setStrengthMode] = useState<StrengthMode>('absolute')
 
-  const competitions = useMemo(() => getTradingCompetitions(bundles), [bundles])
+  useEffect(() => {
+    setIsLoading(true)
+    const timeoutId = window.setTimeout(() => {
+      setBundles(buildTradingFixtureBundles())
+      setIsLoading(false)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [])
+
+  const competitions = useMemo(
+    () => (bundles ? getTradingCompetitions(bundles) : []),
+    [bundles],
+  )
 
   const players = useMemo(
-    () => bundles.flatMap((bundle) => bundle.players),
+    () => bundles?.flatMap((bundle) => bundle.players) ?? [],
     [bundles],
   )
 
@@ -62,19 +97,30 @@ export function TradingView() {
 
   const maxStrengthInMatch = useMemo(() => {
     if (players.length === 0) return 0
-    return Math.max(
-      ...players.flatMap((player) =>
-        MARKET_COLUMNS.map((column) =>
-          getStrengthForCell(player.id, column.key, player.markets[column.key].strength),
-        ),
-      ),
-    )
+    return maxStrengthAcrossPlayers(players, getStrengthForCell)
   }, [players, getStrengthForCell])
 
-  const filteredCellRows = useMemo(
-    () => filterTradingCellRows(bundles, filters, strengthMode, maxStrengthInMatch),
-    [bundles, filters, strengthMode, maxStrengthInMatch],
-  )
+  const filteredCellRows = useMemo(() => {
+    if (!bundles) return []
+    return filterTradingCellRows(bundles, filters, strengthMode, maxStrengthInMatch)
+  }, [bundles, filters, strengthMode, maxStrengthInMatch])
+
+  const pageCount = Math.max(1, Math.ceil(filteredCellRows.length / PAGE_SIZE))
+
+  useEffect(() => {
+    setPage(0)
+  }, [filters.competition, filters.search, filters.team, filters.pricing, filters.status, filters.issues])
+
+  useEffect(() => {
+    if (page > pageCount - 1) {
+      setPage(Math.max(0, pageCount - 1))
+    }
+  }, [page, pageCount])
+
+  const pagedCellRows = useMemo(() => {
+    const start = page * PAGE_SIZE
+    return filteredCellRows.slice(start, start + PAGE_SIZE)
+  }, [filteredCellRows, page])
 
   const proposalSummaries = useMemo((): ProposalSummary[] => {
     const playerById = new Map(players.map((player) => [player.id, player]))
@@ -151,6 +197,8 @@ export function TradingView() {
     (pending?: { playerId: string; marketKey: MarketKey; strength: number }) => {
       setProposals((currentProposals) => {
         setBundles((currentBundles) => {
+          if (!currentBundles) return currentBundles
+
           const currentPlayers = currentBundles.flatMap((bundle) => bundle.players)
           const toApply = mergePendingProposal(
             currentProposals,
@@ -191,8 +239,10 @@ export function TradingView() {
 
   const handlePlayerMarketSuspendedChange = useCallback(
     (playerId: string, marketKey: MarketKey, suspended: boolean) => {
-      setBundles((currentBundles) =>
-        currentBundles.map((bundle) => ({
+      setBundles((currentBundles) => {
+        if (!currentBundles) return currentBundles
+
+        return currentBundles.map((bundle) => ({
           ...bundle,
           players: bundle.players.map((player) => {
             if (player.id !== playerId) return player
@@ -208,8 +258,8 @@ export function TradingView() {
               },
             }
           }),
-        })),
-      )
+        }))
+      })
     },
     [],
   )
@@ -229,8 +279,18 @@ export function TradingView() {
       handlePlayerMarketSuspendedChange(playerId, marketKey, suspended),
   })
 
-  const fixtureCount = bundles.length
+  const fixtureCount = bundles?.length ?? 0
   const marketCount = filteredCellRows.length
+  const pageStart = filteredCellRows.length === 0 ? 0 : page * PAGE_SIZE + 1
+  const pageEnd = Math.min(filteredCellRows.length, (page + 1) * PAGE_SIZE)
+
+  if (isLoading || !bundles) {
+    return (
+      <div className="flex min-h-[16rem] flex-1 items-center justify-center p-6">
+        <p className="text-sm text-app-text-muted">Loading trading markets…</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-w-0 w-full flex-col">
@@ -317,7 +377,7 @@ export function TradingView() {
 
       <div className="p-4 sm:px-6 sm:pb-6">
         <PlayerListTable
-          rows={filteredCellRows}
+          rows={pagedCellRows}
           proposals={proposals}
           strengthMode={strengthMode}
           maxStrengthInMatch={maxStrengthInMatch}
@@ -328,6 +388,36 @@ export function TradingView() {
             effectivelySuspended: marketSuspended,
           })}
         />
+
+        {filteredCellRows.length > PAGE_SIZE ? (
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-app-text-muted">
+            <p>
+              Showing {pageStart.toLocaleString()}–{pageEnd.toLocaleString()} of{' '}
+              {filteredCellRows.length.toLocaleString()} rows
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.max(0, current - 1))}
+                disabled={page === 0}
+                className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="tabular-nums">
+                Page {page + 1} of {pageCount}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
+                disabled={page >= pageCount - 1}
+                className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   )
