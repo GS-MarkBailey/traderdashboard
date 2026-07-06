@@ -1,11 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { MarketKey, StrengthMode } from '../types/trading'
+import type {
+  MainMarketSectionId,
+  MainMarketSectionStatus,
+  MainMarketsLayout,
+  MarketKey,
+  StrengthMode,
+} from '../types/trading'
 import { MARKET_COLUMNS } from '../types/trading'
 import {
   filterTradingCellRows,
   type TradingFixtureBundle,
   type TradingTableFilters,
 } from '../lib/cellFilters'
+import { formatKickoffDateTime } from '../lib/fixture'
+import {
+  updateMainMarketSectionStatus,
+  updateMainMarketSectionStrength,
+} from '../lib/mainMarkets'
 import {
   calculatePriceFromStrength,
   formatPrice,
@@ -20,12 +31,16 @@ import {
   type ProposalMap,
   type ProposalSummary,
 } from '../lib/proposals'
+import type { TradingTier } from '../lib/tradingTier'
 import {
   buildTradingFixtureBundles,
   getTradingCompetitions,
 } from '../lib/tradingAggregate'
+import { MainMarketsPanel } from './MainMarketsPanel'
 import { PlayerListTable } from './PlayerListTable'
 import { Toolbar } from './Toolbar'
+import { TradingTabs, type TradingTab } from './TradingTabs'
+import { FORM_SELECT_CLASS } from '../lib/tableTypography'
 
 const DEFAULT_FILTERS: TradingTableFilters = {
   search: '',
@@ -58,9 +73,23 @@ function maxStrengthAcrossPlayers(
   return max
 }
 
-export function TradingView() {
+function filterBundlesByCompetition(
+  bundles: TradingFixtureBundle[],
+  competition: string,
+): TradingFixtureBundle[] {
+  if (competition === 'all') return bundles
+  return bundles.filter((bundle) => bundle.competition === competition)
+}
+
+interface TradingViewProps {
+  tier: TradingTier
+}
+
+export function TradingView({ tier }: TradingViewProps) {
   const [bundles, setBundles] = useState<TradingFixtureBundle[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<TradingTab>('main-markets')
+  const [mainMarketsLayout, setMainMarketsLayout] = useState<MainMarketsLayout>('stacked')
   const [page, setPage] = useState(0)
   const [proposals, setProposals] = useState<ProposalMap>({})
   const [filters, setFilters] = useState<TradingTableFilters>(DEFAULT_FILTERS)
@@ -79,6 +108,11 @@ export function TradingView() {
   const competitions = useMemo(
     () => (bundles ? getTradingCompetitions(bundles) : []),
     [bundles],
+  )
+
+  const visibleBundles = useMemo(
+    () => (bundles ? filterBundlesByCompetition(bundles, filters.competition) : []),
+    [bundles, filters.competition],
   )
 
   const players = useMemo(
@@ -236,6 +270,42 @@ export function TradingView() {
     setFilters((current) => ({ ...current, [key]: value }))
   }
 
+  const updateBundleMainMarkets = useCallback(
+    (
+      fixtureId: string,
+      updater: (settings: TradingFixtureBundle['mainMarkets']) => TradingFixtureBundle['mainMarkets'],
+    ) => {
+      setBundles((currentBundles) => {
+        if (!currentBundles) return currentBundles
+
+        return currentBundles.map((bundle) =>
+          bundle.fixtureId === fixtureId
+            ? { ...bundle, mainMarkets: updater(bundle.mainMarkets) }
+            : bundle,
+        )
+      })
+    },
+    [],
+  )
+
+  const handleApplyMainMarketSectionStrength = useCallback(
+    (fixtureId: string, sectionId: MainMarketSectionId, slotIndex: number, strength: number) => {
+      updateBundleMainMarkets(fixtureId, (settings) =>
+        updateMainMarketSectionStrength(settings, sectionId, slotIndex, strength),
+      )
+    },
+    [updateBundleMainMarkets],
+  )
+
+  const handleMainMarketSectionStatusChange = useCallback(
+    (fixtureId: string, sectionId: MainMarketSectionId, status: MainMarketSectionStatus) => {
+      updateBundleMainMarkets(fixtureId, (settings) =>
+        updateMainMarketSectionStatus(settings, sectionId, status),
+      )
+    },
+    [updateBundleMainMarkets],
+  )
+
   const handlePlayerMarketSuspendedChange = useCallback(
     (playerId: string, marketKey: MarketKey, suspended: boolean) => {
       setBundles((currentBundles) => {
@@ -294,92 +364,168 @@ export function TradingView() {
   return (
     <div className="flex min-w-0 w-full flex-col">
       <div className="border-b border-app-border bg-app-surface px-4 py-3 sm:px-6">
-        <h2 className="font-heading text-[13px] font-semibold text-app-text">
-          Trading — player props
-        </h2>
+        <h2 className="font-heading text-[13px] font-semibold text-app-text">Trading</h2>
         <p className="mt-1 text-[10px] text-app-text-muted">
-          {fixtureCount} fixtures · {marketCount.toLocaleString()} market rows ·{' '}
-          {competitions.length} competitions
+          {fixtureCount} fixtures · {competitions.length} competitions
+          {activeTab === 'player-props'
+            ? ` · ${marketCount.toLocaleString()} player prop rows`
+            : ` · ${visibleBundles.length} main market panels`}
         </p>
       </div>
 
-      <Toolbar
-        hasPlayers
-        strengthMode={strengthMode}
-        search={filters.search}
-        teamFilter={filters.team}
-        pricingFilter={filters.pricing}
-        statusFilter={filters.status}
-        issueFilter={filters.issues}
-        viewMode="list"
-        proposals={proposalSummaries}
-        onImport={() => {}}
-        onConfirmAllProposals={() => submitAllProposals()}
-        onRejectAllProposals={() => setProposals({})}
-        onRejectProposal={(key) =>
-          setProposals((current) => {
-            if (!(key in current)) return current
-            const { [key]: _, ...rest } = current
-            return rest
-          })
-        }
-        onStrengthModeChange={setStrengthMode}
-        onSearchChange={(value) => updateFilter('search', value)}
-        onTeamFilterChange={(value) => updateFilter('team', value)}
-        onPricingFilterChange={(value) => updateFilter('pricing', value)}
-        onStatusFilterChange={(value) => updateFilter('status', value)}
-        onIssueFilterChange={(value) => updateFilter('issues', value)}
-        onViewModeChange={() => {}}
-        showViewMode={false}
-        competitions={competitions}
-        competitionFilter={filters.competition}
-        onCompetitionFilterChange={(value) => updateFilter('competition', value)}
-      />
-
-      <div className="p-4 sm:px-6 sm:pb-6">
-        <PlayerListTable
-          rows={pagedCellRows}
-          proposals={proposals}
-          strengthMode={strengthMode}
-          maxStrengthInMatch={maxStrengthInMatch}
-          showFixtureColumns
-          getCellHandlers={renderMarketCellHandlers}
-          getMarketSuspensionProps={(_, marketSuspended) => ({
-            mainSectionLocked: false,
-            effectivelySuspended: marketSuspended,
-          })}
-        />
-
-        {filteredCellRows.length > PAGE_SIZE ? (
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-app-text-muted">
-            <p>
-              Showing {pageStart.toLocaleString()}–{pageEnd.toLocaleString()} of{' '}
-              {filteredCellRows.length.toLocaleString()} rows
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setPage((current) => Math.max(0, current - 1))}
-                disabled={page === 0}
-                className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="tabular-nums">
-                Page {page + 1} of {pageCount}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
-                disabled={page >= pageCount - 1}
-                className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        ) : null}
+      <div className="bg-app-surface px-4 pt-2 sm:px-6 sm:pt-3">
+        <TradingTabs value={activeTab} onChange={setActiveTab} />
       </div>
+
+      {activeTab === 'main-markets' ? (
+        <>
+          <div className="flex flex-wrap items-center gap-3 border-b border-app-border bg-app-muted px-4 py-3 sm:px-6">
+            <label className="flex items-center gap-2">
+              <span className="text-xs font-medium text-app-text-muted">Competition</span>
+              <select
+                value={filters.competition}
+                onChange={(event) => updateFilter('competition', event.target.value)}
+                className={FORM_SELECT_CLASS}
+                aria-label="Filter by competition"
+              >
+                <option value="all">All competitions</option>
+                {competitions.map((competition) => (
+                  <option key={competition} value={competition}>
+                    {competition}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="flex min-w-0 flex-col gap-4 p-4 sm:px-6 sm:pb-6">
+            {visibleBundles.length === 0 ? (
+              <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-app-input-border bg-app-muted text-sm text-app-text-muted">
+                No fixtures match the selected competition.
+              </div>
+            ) : (
+              visibleBundles.map((bundle, index) => (
+                <article
+                  key={bundle.fixtureId}
+                  className="overflow-hidden rounded-2xl border border-app-border bg-app-surface shadow-sm"
+                >
+                  <header className="border-b border-app-border bg-app-muted px-4 py-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-app-text-muted">
+                      {bundle.competition} · {bundle.fixtureId}
+                    </p>
+                    <h3 className="mt-1 font-heading text-sm font-semibold text-app-text">
+                      {bundle.fixture.homeTeam} vs {bundle.fixture.awayTeam}
+                    </h3>
+                    <p className="mt-0.5 text-[10px] text-app-text-muted">
+                      {formatKickoffDateTime(bundle.fixture.kickoffAt)}
+                    </p>
+                  </header>
+
+                  <MainMarketsPanel
+                    settings={bundle.mainMarkets}
+                    layout={mainMarketsLayout}
+                    tier={tier}
+                    sectionTitle="Main Markets"
+                    defaultExpanded={index < 2}
+                    onLayoutChange={setMainMarketsLayout}
+                    onApplySectionStrength={(sectionId, slotIndex, strength) =>
+                      handleApplyMainMarketSectionStrength(
+                        bundle.fixtureId,
+                        sectionId,
+                        slotIndex,
+                        strength,
+                      )
+                    }
+                    onSectionStatusChange={(sectionId, status) =>
+                      handleMainMarketSectionStatusChange(bundle.fixtureId, sectionId, status)
+                    }
+                  />
+                </article>
+              ))
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          <Toolbar
+            hasPlayers
+            strengthMode={strengthMode}
+            search={filters.search}
+            teamFilter={filters.team}
+            pricingFilter={filters.pricing}
+            statusFilter={filters.status}
+            issueFilter={filters.issues}
+            viewMode="list"
+            proposals={proposalSummaries}
+            onImport={() => {}}
+            onConfirmAllProposals={() => submitAllProposals()}
+            onRejectAllProposals={() => setProposals({})}
+            onRejectProposal={(key) =>
+              setProposals((current) => {
+                if (!(key in current)) return current
+                const { [key]: _, ...rest } = current
+                return rest
+              })
+            }
+            onStrengthModeChange={setStrengthMode}
+            onSearchChange={(value) => updateFilter('search', value)}
+            onTeamFilterChange={(value) => updateFilter('team', value)}
+            onPricingFilterChange={(value) => updateFilter('pricing', value)}
+            onStatusFilterChange={(value) => updateFilter('status', value)}
+            onIssueFilterChange={(value) => updateFilter('issues', value)}
+            onViewModeChange={() => {}}
+            showViewMode={false}
+            competitions={competitions}
+            competitionFilter={filters.competition}
+            onCompetitionFilterChange={(value) => updateFilter('competition', value)}
+          />
+
+          <div className="p-4 sm:px-6 sm:pb-6">
+            <PlayerListTable
+              rows={pagedCellRows}
+              proposals={proposals}
+              strengthMode={strengthMode}
+              maxStrengthInMatch={maxStrengthInMatch}
+              showFixtureColumns
+              getCellHandlers={renderMarketCellHandlers}
+              getMarketSuspensionProps={(_, marketSuspended) => ({
+                mainSectionLocked: false,
+                effectivelySuspended: marketSuspended,
+              })}
+            />
+
+            {filteredCellRows.length > PAGE_SIZE ? (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-app-text-muted">
+                <p>
+                  Showing {pageStart.toLocaleString()}–{pageEnd.toLocaleString()} of{' '}
+                  {filteredCellRows.length.toLocaleString()} rows
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPage((current) => Math.max(0, current - 1))}
+                    disabled={page === 0}
+                    className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="tabular-nums">
+                    Page {page + 1} of {pageCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
+                    disabled={page >= pageCount - 1}
+                    className="rounded-md border border-app-border bg-app-surface px-2.5 py-1 font-medium text-app-text-secondary transition-colors hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </>
+      )}
     </div>
   )
 }

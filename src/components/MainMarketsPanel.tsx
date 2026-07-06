@@ -47,6 +47,8 @@ interface MainMarketsPanelProps {
   settings: MainMarketSettings
   layout: MainMarketsLayout
   tier: TradingTier
+  sectionTitle?: string
+  defaultExpanded?: boolean
   onLayoutChange: (layout: MainMarketsLayout) => void
   onApplySectionStrength: (
     sectionId: MainMarketSectionId,
@@ -774,6 +776,8 @@ export function MainMarketsPanel({
   settings,
   layout,
   tier,
+  sectionTitle = 'Main Markets',
+  defaultExpanded = true,
   onLayoutChange,
   onApplySectionStrength,
   onSectionStatusChange,
@@ -789,7 +793,8 @@ export function MainMarketsPanel({
   return (
     <div className="@container/main-markets min-w-0 w-full overflow-hidden border-b border-app-border bg-app-surface px-2 py-2 sm:px-4 sm:py-3">
       <CollapsibleSection
-        title="Main Markets"
+        title={sectionTitle}
+        defaultExpanded={defaultExpanded}
         headerActions={<LayoutToggle layout={layout} onChange={onLayoutChange} />}
         bodyClassName="mt-2 sm:mt-3"
       >

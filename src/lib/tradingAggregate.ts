@@ -1,5 +1,6 @@
 import type { Fixture } from '../types/trading'
 import { getFixtureTaxonomy } from './fixtureTaxonomy'
+import { createMainMarketsForFixture } from './mainMarkets'
 import { generateMockPlayersForSquads } from './mockData'
 import type { TradingFixtureBundle } from './cellFilters'
 
@@ -123,9 +124,11 @@ export function buildTradingFixtureBundles(): TradingFixtureBundle[] {
     const squads = squadsForFixture(fixture, index + 1)
 
     return {
+      fixture,
       fixtureId: fixture.id,
       competition,
       country,
+      mainMarkets: createMainMarketsForFixture(index + 1),
       players: generateMockPlayersForSquads({
         idPrefix: fixture.id,
         ...squads,

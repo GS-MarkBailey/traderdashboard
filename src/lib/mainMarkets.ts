@@ -390,12 +390,12 @@ function createInitialMarketSnapshot(
   }
 }
 
-export function createDefaultMainMarkets(): MainMarketSettings {
+export function createMainMarketsForFixture(fixtureSeed = 1): MainMarketSettings {
   const sectionStrengths = MAIN_MARKET_SECTIONS.reduce(
     (acc, section, sectionIndex) => {
       acc[section.id] = deriveSectionStrengths(
         section.strengthSlotCount,
-        sectionIndex + 1,
+        fixtureSeed * 7 + sectionIndex + 1,
       )
       return acc
     },
@@ -416,7 +416,7 @@ export function createDefaultMainMarkets(): MainMarketSettings {
     section.markets.map((market, marketIndex) => ({
       key: market.key,
       sectionId: section.id,
-      seed: marketIndex + 1,
+      seed: fixtureSeed * 13 + marketIndex + 1,
     })),
   ).reduce(
     (acc, { key, sectionId, seed }) => {
@@ -432,6 +432,10 @@ export function createDefaultMainMarkets(): MainMarketSettings {
   )
 
   return { sectionStrengths, sectionStatus, sectionScores, markets }
+}
+
+export function createDefaultMainMarkets(): MainMarketSettings {
+  return createMainMarketsForFixture(1)
 }
 
 export function updateMainMarketSectionStatus(

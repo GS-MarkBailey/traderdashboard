@@ -1,4 +1,11 @@
-import type { MarketKey, Player, StrengthMode, TableFilters } from '../types/trading'
+import type {
+  Fixture,
+  MainMarketSettings,
+  MarketKey,
+  Player,
+  StrengthMode,
+  TableFilters,
+} from '../types/trading'
 import { MARKET_COLUMNS } from '../types/trading'
 import {
   calculatePriceFromStrength,
@@ -140,10 +147,12 @@ export function filterCellRowsForList(
 }
 
 export interface TradingFixtureBundle {
+  fixture: Fixture
   fixtureId: string
   competition: string
   country: string
   players: Player[]
+  mainMarkets: MainMarketSettings
 }
 
 export interface TradingTableFilters extends TableFilters {
